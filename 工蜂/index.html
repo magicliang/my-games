@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#101827">
+    <meta name="description" content="受《3D经典 兵蜂》启发的五关网页版纵向射击游戏，支持键盘、鼠标和触屏。">
+    <title>工蜂 3D | 五关街机射击</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#game-canvas">跳到游戏</a>
+
+    <main class="page-shell">
+      <section class="arcade" aria-labelledby="game-title">
+        <header class="arcade__header">
+          <div>
+            <p class="arcade__kicker">五关纵向射击</p>
+            <h1 id="game-title">工蜂 <span>3D</span></h1>
+          </div>
+          <div class="arcade__header-actions">
+            <button id="sound-button" class="button button--quiet" type="button" aria-pressed="true">声音：开</button>
+            <button id="pause-button" class="button button--quiet" type="button" disabled>暂停</button>
+          </div>
+        </header>
+
+        <div class="hud" aria-label="游戏状态">
+          <p><span>分数</span><strong id="score-value">000000</strong></p>
+          <p><span>关卡</span><strong id="stage-value">1 / 5</strong></p>
+          <p><span>生命</span><strong id="lives-value">3</strong></p>
+          <p><span>装备</span><strong id="power-value">标准装备</strong></p>
+        </div>
+
+        <div class="screen-shell" id="screen-shell">
+          <canvas id="world-canvas" width="480" height="720" aria-hidden="true"></canvas>
+          <canvas
+            id="game-canvas"
+            width="480"
+            height="720"
+            tabindex="0"
+            aria-label="工蜂 3D 游戏画面。使用方向键或 WASD 移动，空格或 J 射击，K 投弹，P 暂停。"
+          ></canvas>
+
+          <div class="overlay overlay--visible" id="game-overlay" role="dialog" aria-modal="false" aria-labelledby="overlay-title">
+            <div class="overlay__panel">
+              <p id="overlay-kicker" class="overlay__kicker">多布里岛告急</p>
+              <h2 id="overlay-title">五关，一次起飞</h2>
+              <p id="overlay-copy">射击云朵，追打铃铛改变颜色。用炸弹清除地面炮台，击败五名守关 Boss。</p>
+              <div class="overlay__actions">
+                <button id="start-button" class="button button--primary" type="button">开始游戏</button>
+                <button id="stage-select-button" class="button button--secondary" type="button">选择关卡</button>
+              </div>
+              <div id="stage-picker" class="stage-picker" hidden aria-label="关卡选择"></div>
+            </div>
+          </div>
+
+          <div class="damage-vignette" id="damage-vignette" aria-hidden="true"></div>
+        </div>
+
+        <div class="touch-controls" aria-label="触屏控制">
+          <div class="dpad" aria-label="移动方向">
+            <button class="touch-button dpad__up" type="button" data-control="up" aria-label="向上">↑</button>
+            <button class="touch-button dpad__left" type="button" data-control="left" aria-label="向左">←</button>
+            <span class="dpad__center" aria-hidden="true"></span>
+            <button class="touch-button dpad__right" type="button" data-control="right" aria-label="向右">→</button>
+            <button class="touch-button dpad__down" type="button" data-control="down" aria-label="向下">↓</button>
+          </div>
+          <div class="action-pad">
+            <button class="touch-button touch-button--bomb" type="button" data-control="bomb"><span>B</span>炸弹</button>
+            <button class="touch-button touch-button--fire" type="button" data-control="fire"><span>A</span>射击</button>
+          </div>
+        </div>
+
+        <p class="keyboard-hint"><kbd>WASD</kbd> / 方向键移动　<kbd>J</kbd> / 空格射击　<kbd>K</kbd> 投弹　<kbd>P</kbd> 暂停</p>
+        <p id="live-status" class="sr-only" aria-live="polite">游戏准备完成</p>
+      </section>
+
+      <aside class="manual" aria-labelledby="manual-title">
+        <header>
+          <p class="manual__kicker">说明书</p>
+          <h2 id="manual-title">先射云，再追铃</h2>
+          <p>黄色铃铛加分。继续射中它会依次变成蓝、白、绿、红，分别强化速度、<span class="no-break">双炮</span>、分身和<span class="no-break">护盾</span>。</p>
+        </header>
+
+        <section>
+          <h3>两种攻击</h3>
+          <dl class="manual__controls">
+            <div><dt>空中射击</dt><dd>击落敌机、云朵与铃铛。</dd></div>
+            <div><dt>地面炸弹</dt><dd>炸掉炮台，获得水果、<span class="no-break">散射或清屏星。</span></dd></div>
+          </dl>
+        </section>
+
+        <section>
+          <h3>机体受损</h3>
+          <p>子弹擦中左右侧会打掉一只手臂。两臂都丢失后不能投弹，救护机会出现一次。<span class="no-break">接住即可修复。</span></p>
+        </section>
+
+        <details>
+          <summary>五关和 Boss</summary>
+          <ol class="stage-list">
+            <li><strong>海岛蔬果</strong><span>草莓、洋葱、紫飞机 / 洋葱头</span></li>
+            <li><strong>餐具大陆</strong><span>碟、刀、叉、碗 / 平行飞碟</span></li>
+            <li><strong>奇兽暮野</strong><span>龙虾、乌贼、飞象 / 虎鲨舰</span></li>
+            <li><strong>磁力回廊</strong><span>磁碟、巨蟹、双刀 / 巨钳装置</span></li>
+            <li><strong>香料王城</strong><span>电气敌群与追踪机 / 香料王</span></li>
+          </ol>
+        </details>
+
+        <details>
+          <summary>打不开或没有声音</summary>
+          <p>可直接双击 <code>index.html</code>。需要支持 WebGL2；浏览器只允许在第一次点击后播放声音，所以先点“开始游戏”。</p>
+        </details>
+
+        <p class="manual__note">本作使用原创程序绘制和合成音效，未使用原版素材。</p>
+      </aside>
+    </main>
+
+    <script src="game-core.js"></script>
+    <script src="webgl-renderer.js"></script>
+    <script src="game.js"></script>
+  </body>
+</html>

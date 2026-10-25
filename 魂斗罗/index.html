@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta
+      name="description"
+      content="原创低多边形网页版 3D 魂斗罗：穿越丛林、桥梁与火力网，摧毁终点堡垒。"
+    />
+    <title>魂斗罗：丛林突击 3D</title>
+  </head>
+  <body>
+    <main id="game-shell" aria-label="魂斗罗 3D 游戏区域">
+      <div id="viewport"></div>
+      <div class="scanlines" aria-hidden="true"></div>
+      <div class="vignette" aria-hidden="true"></div>
+
+      <header id="hud" class="hud" aria-live="polite">
+        <div class="hud__brand"><span>魂斗罗</span><small>JUNGLE STRIKE // 01</small></div>
+        <div class="hud__stat"><small>战士</small><strong id="lives">× 3</strong></div>
+        <div class="hud__stat"><small>武器</small><strong id="weapon">RIFLE</strong></div>
+        <div class="hud__stat"><small>得分</small><strong id="score">000000</strong></div>
+        <div class="hud__mission">
+          <small>堡垒距离</small>
+          <div class="progress"><span id="progress-bar"></span></div>
+          <strong id="progress-text">0%</strong>
+        </div>
+      </header>
+
+      <div id="boss-hud" class="boss-hud" hidden>
+        <span>防御核心</span>
+        <div class="boss-hud__track"><i id="boss-health"></i></div>
+      </div>
+
+      <div id="objective" class="objective">任务：向东推进，摧毁丛林堡垒</div>
+      <div id="toast" class="toast" aria-live="assertive"></div>
+      <div id="crosshair" class="crosshair" aria-hidden="true"><i></i><i></i></div>
+
+      <section id="briefing" class="overlay overlay--visible">
+        <div class="briefing-card">
+          <p class="eyebrow">RED FALCON // 绝密行动</p>
+          <h1>丛林突击<br /><em>3D</em></h1>
+          <p class="briefing-card__lead">
+            穿过浅水、两座爆破桥和密林火力点。击毁堡垒双炮与屋顶狙击手，再摧毁核心。
+          </p>
+          <div class="briefing-card__controls">
+            <span><kbd>W A S D</kbd> 移动</span>
+            <span><kbd>空格</kbd> 跳跃</span>
+            <span><kbd>鼠标 / J</kbd> 瞄准射击</span>
+            <span><kbd>Esc</kbd> 暂停</span>
+          </div>
+          <div class="briefing-card__actions">
+            <button id="start-button" class="button button--primary" type="button">开始行动</button>
+            <button id="manual-button" class="button" type="button">查看说明书</button>
+          </div>
+          <small class="briefing-card__note">建议使用桌面 Chrome / Edge，并开启声音。</small>
+        </div>
+      </section>
+
+      <section id="pause-panel" class="overlay" hidden>
+        <div class="result-card">
+          <p class="eyebrow">行动暂停</p>
+          <h2>保持警戒</h2>
+          <p>按 <kbd>Esc</kbd> 返回战场</p>
+        </div>
+      </section>
+
+      <section id="result-panel" class="overlay" hidden>
+        <div class="result-card">
+          <p id="result-kicker" class="eyebrow"></p>
+          <h2 id="result-title">任务结算</h2>
+          <p id="result-copy"></p>
+          <button id="restart-button" class="button button--primary" type="button">重新出击</button>
+        </div>
+      </section>
+
+      <dialog id="manual-dialog" class="manual">
+        <form method="dialog">
+          <button class="manual__close" type="submit" aria-label="关闭说明书">×</button>
+        </form>
+        <p class="eyebrow">FIELD MANUAL // 说明书</p>
+        <h2>丛林作战守则</h2>
+        <ol>
+          <li><strong>推进</strong>：WASD 在 3D 战场移动，空格跳过火线和高差。</li>
+          <li><strong>射击</strong>：鼠标控制准星，按住左键或 J 连射。准星越高，弹道越高。</li>
+          <li><strong>武器</strong>：依次可拾取 R 快射、S 散弹、L 激光；阵亡后恢复步枪。</li>
+          <li><strong>生命</strong>：敌弹一击损失一条命，短暂无敌后从最近检查点复活。</li>
+          <li><strong>堡垒</strong>：先清除两门守卫炮和屋顶狙击手，核心才会解除护盾。</li>
+          <li><strong>经典秘籍</strong>：标题页输入 ↑ ↑ ↓ ↓ ← → ← → B A Enter，可获得 30 条命。</li>
+        </ol>
+        <p class="manual__tip">提示：桥面爆炸采用红白机版规则，只制造压迫感，不会直接伤害你。</p>
+      </dialog>
+
+      <fieldset class="touch-controls">
+        <legend class="sr-only">触屏控制</legend>
+        <div class="touch-pad">
+          <button type="button" data-hold="KeyW">▲</button>
+          <button type="button" data-hold="KeyA">◀</button>
+          <button type="button" data-hold="KeyS">▼</button>
+          <button type="button" data-hold="KeyD">▶</button>
+        </div>
+        <button class="touch-action touch-action--jump" type="button" data-hold="Space">跳</button>
+        <button class="touch-action touch-action--fire" type="button" data-hold="KeyJ">火</button>
+      </fieldset>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
