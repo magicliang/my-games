@@ -1,0 +1,118 @@
+Baseline behavior evidence — 2026-10-25 Asia/Shanghai
+Base repository HEAD: 70841661bf1174c0c8430fbbabae85bd073d6c2a
+Game implementation was unmodified when this run executed.
+Command: npm test -- tests/gameplay.test.ts
+Expected test-run exit code: 1 (five assertion failures; no import/build failures).
+Fixtures used real THREE.Scene, existing createRuntime/updatePlayer/firePlayer/updateCombat;
+only input, UI, and audio side effects were stubbed. Final gameplay tests supersede this
+initial source; this output preserves the pre-repair observed values.
+
+
+> contra-jungle-3d@1.0.0 test
+> vitest run tests/gameplay.test.ts
+
+
+ RUN  v4.1.11 /Users/magicliang/Desktop/Programming/git/my-games/魂斗罗
+
+ ❯ tests/gameplay.test.ts (5 tests | 5 failed) 55ms
+     × keeps the playable lane at z=0 when aiming up 19ms
+     × enters a prone state on down instead of moving into depth 5ms
+     × fires five spread projectiles in the XY combat plane 15ms
+     × lets a bullet hit the core while guards remain alive 7ms
+     × does not teleport a hit player back to a 50m checkpoint 7ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/gameplay.test.ts > pre-change gameplay regressions > keeps the playable lane at z=0 when aiming up
+AssertionError: expected -0.12 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ -0.12
+
+ ❯ tests/gameplay.test.ts:14:50
+     12|     held.add("KeyW");
+     13|     updatePlayer(runtime, 1 / 60, 1);
+     14|     expect(runtime.player.model.root.position.z).toBe(0);
+       |                                                  ^
+     15|   });
+     16|   it("enters a prone state on down instead of moving into depth", () =…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  tests/gameplay.test.ts > pre-change gameplay regressions > enters a prone state on down instead of moving into depth
+AssertionError: expected undefined to be 'prone' // Object.is equality
+
+- Expected:
+"prone"
+
++ Received:
+undefined
+
+ ❯ tests/gameplay.test.ts:20:49
+     18|     held.add("KeyS");
+     19|     updatePlayer(runtime, 1 / 60, 1);
+     20|     expect(Reflect.get(runtime.player, "pose")).toBe("prone");
+       |                                                 ^
+     21|   });
+     22|   it("fires five spread projectiles in the XY combat plane", () => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  tests/gameplay.test.ts > pre-change gameplay regressions > fires five spread projectiles in the XY combat plane
+AssertionError: expected [ { mesh: Mesh{ …(37) }, …(4) }, …(2) ] to have a length of 5 but got 3
+
+- Expected
++ Received
+
+- 5
++ 3
+
+ ❯ tests/gameplay.test.ts:27:33
+     25|     runtime.player.weapon = Weapon.spread;
+     26|     firePlayer(runtime, 1);
+     27|     expect(runtime.playerShots).toHaveLength(5);
+       |                                 ^
+     28|     expect(runtime.playerShots.every((shot) => shot.velocity.z === 0))…
+     29|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  tests/gameplay.test.ts > pre-change gameplay regressions > lets a bullet hit the core while guards remain alive
+AssertionError: expected 24 to be 23 // Object.is equality
+
+- Expected
++ Received
+
+- 23
++ 24
+
+ ❯ tests/gameplay.test.ts:40:21
+     38|     runtime.playerShots.push({ mesh, velocity: new THREE.Vector3(), en…
+     39|     updateCombat(runtime, 1 / 60, 1);
+     40|     expect(core.hp).toBe(hp - 1);
+       |                     ^
+     41|   });
+     42|   it("does not teleport a hit player back to a 50m checkpoint", () => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  tests/gameplay.test.ts > pre-change gameplay regressions > does not teleport a hit player back to a 50m checkpoint
+AssertionError: expected 50 to be greater than 70
+ ❯ tests/gameplay.test.ts:50:50
+     48|     updateCombat(runtime, 1 / 60, 1);
+     49|     expect(runtime.player.lives).toBe(2);
+     50|     expect(runtime.player.model.root.position.x).toBeGreaterThan(70);
+       |                                                  ^
+     51|   });
+     52| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed (5)
+   Start at  21:35:11
+   Duration  2.33s (transform 564ms, setup 0ms, import 727ms, tests 55ms, environment 0ms)

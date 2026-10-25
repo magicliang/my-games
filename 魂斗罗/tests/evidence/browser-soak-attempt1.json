@@ -1,0 +1,1936 @@
+{
+  "started": "2026-10-25T13:53:49.509Z",
+  "base": "http://127.0.0.1:5173/?test=1",
+  "soakSeconds": 300,
+  "checks": [
+    {
+      "name": "default classic and invincibility off",
+      "passed": true,
+      "durationMs": 81
+    },
+    {
+      "name": "binding conflict rejection and reload persistence",
+      "passed": true,
+      "durationMs": 1674
+    },
+    {
+      "name": "keyboard movement and prone keep z locked",
+      "passed": true,
+      "durationMs": 433
+    },
+    {
+      "fixture": "position below opening ledge; disable enemies for isolated movement"
+    },
+    {
+      "name": "real jump key crosses then lands on a one-way platform",
+      "passed": true,
+      "durationMs": 1231
+    },
+    {
+      "fixture": "set a three-second invulnerability deadline for pause observation"
+    },
+    {
+      "name": "keyboard fire launches shots and pause freezes simulation for 2.2 seconds",
+      "passed": true,
+      "durationMs": 2833
+    },
+    {
+      "name": "blur event releases input and pauses without consuming game time",
+      "passed": true,
+      "durationMs": 2917
+    },
+    {
+      "fixture": "a live runner at x=8; vulnerable player at x=5 with S+R"
+    },
+    {
+      "name": "actual hostile contact kills then respawns in the current screen",
+      "passed": true,
+      "durationMs": 1123
+    },
+    {
+      "fixture": "place shooter in boss arena; one-hit core, living mortar guards"
+    },
+    {
+      "name": "keyboard shots destroy core with mortars alive, restart resets the stage",
+      "passed": true,
+      "durationMs": 1214
+    },
+    {
+      "fixture": "touch input fixture: M weapon with no enemy interference"
+    },
+    {
+      "name": "CDP multi-touch move + jump + fire, drag-out capture, release and cancel",
+      "passed": true,
+      "durationMs": 534
+    },
+    {
+      "name": "portrait touch controls and pause/resume remain reachable",
+      "passed": true,
+      "durationMs": 448
+    },
+    {
+      "name": "complete first stage from spawn with keyboard only and explicit invincibility",
+      "passed": true,
+      "durationMs": 33527
+    }
+  ],
+  "errors": [],
+  "performance": [
+    {
+      "label": "desktop-smoke",
+      "state": {
+        "phase": "playing",
+        "time": 0.21666666666666665,
+        "player": {
+          "x": 1,
+          "y": 0,
+          "z": 0,
+          "pose": "standing",
+          "grounded": true,
+          "groundId": "bank-west",
+          "lives": 3,
+          "hp": 1,
+          "weapon": "rifle",
+          "rapid": false,
+          "invulnerableUntil": 1.5,
+          "lastDamage": "",
+          "bonusLives": false
+        },
+        "cameraX": 12,
+        "held": [],
+        "shots": 0,
+        "enemyShots": 0,
+        "sparks": 0,
+        "enemies": 4,
+        "bridgesDestroyed": 0,
+        "bossHealth": 100,
+        "options": {
+          "mode": "classic",
+          "invincible": false
+        },
+        "performance": {
+          "frames": 600,
+          "frameMsP50": 16.600000000000364,
+          "frameMsP95": 33.5,
+          "renderMsMean": 0.2950000023841858,
+          "calls": 72,
+          "triangles": 1756,
+          "geometries": 41,
+          "textures": 2
+        }
+      }
+    },
+    {
+      "label": "touch-emulation",
+      "state": {
+        "phase": "playing",
+        "time": 0.6500000000000004,
+        "player": {
+          "x": 3.6999999999999984,
+          "y": 2.899999999999998,
+          "z": 0,
+          "pose": "jumping",
+          "grounded": false,
+          "groundId": null,
+          "lives": 3,
+          "hp": 1,
+          "weapon": "machine",
+          "rapid": false,
+          "invulnerableUntil": 1.5,
+          "lastDamage": "",
+          "bonusLives": false
+        },
+        "cameraX": 12,
+        "held": [],
+        "shots": 3,
+        "enemyShots": 0,
+        "sparks": 0,
+        "enemies": 0,
+        "bridgesDestroyed": 0,
+        "bossHealth": 100,
+        "options": {
+          "mode": "classic",
+          "invincible": false
+        },
+        "performance": {
+          "frames": 141,
+          "frameMsP50": 8.299999999999955,
+          "frameMsP95": 9.200000000000045,
+          "renderMsMean": 0.5041379320210424,
+          "calls": 48,
+          "triangles": 1642,
+          "geometries": 21,
+          "textures": 1
+        }
+      }
+    },
+    {
+      "label": "after-first-complete-run-restart",
+      "state": {
+        "phase": "playing",
+        "time": 0.06666666666666667,
+        "player": {
+          "x": 1,
+          "y": 0,
+          "z": 0,
+          "pose": "standing",
+          "grounded": true,
+          "groundId": "bank-west",
+          "lives": 3,
+          "hp": 1,
+          "weapon": "rifle",
+          "rapid": false,
+          "invulnerableUntil": 1.5,
+          "lastDamage": "",
+          "bonusLives": false
+        },
+        "cameraX": 12,
+        "held": [],
+        "shots": 0,
+        "enemyShots": 0,
+        "sparks": 0,
+        "enemies": 4,
+        "bridgesDestroyed": 0,
+        "bossHealth": 100,
+        "options": {
+          "mode": "classic",
+          "invincible": true
+        },
+        "performance": {
+          "frames": 600,
+          "frameMsP50": 16.600000000002183,
+          "frameMsP95": 25.5,
+          "renderMsMean": 0.3621666649977366,
+          "calls": 72,
+          "triangles": 1756,
+          "geometries": 72,
+          "textures": 2
+        }
+      }
+    },
+    {
+      "label": "soak-10s",
+      "state": {
+        "phase": "playing",
+        "time": 10.016666666666744,
+        "player": {
+          "x": 51.42333333333413,
+          "y": 0,
+          "z": 0,
+          "pose": "standing",
+          "grounded": true,
+          "groundId": "island",
+          "lives": 3,
+          "hp": 1,
+          "weapon": "rifle",
+          "rapid": true,
+          "invulnerableUntil": 1.5,
+          "lastDamage": "",
+          "bonusLives": false
+        },
+        "cameraX": 57.42333333333413,
+        "held": ["right"],
+        "shots": 3,
+        "enemyShots": 3,
+        "sparks": 8,
+        "enemies": 3,
+        "bridgesDestroyed": 8,
+        "bossHealth": 100,
+        "options": {
+          "mode": "classic",
+          "invincible": true
+        },
+        "performance": {
+          "frames": 600,
+          "frameMsP50": 16.599999999998545,
+          "frameMsP95": 33.400000000001455,
+          "renderMsMean": 0.2935000020265579,
+          "calls": 82,
+          "triangles": 2322,
+          "geometries": 72,
+          "textures": 2
+        }
+      }
+    },
+    {
+      "label": "soak-20s",
+      "state": {
+        "phase": "playing",
+        "time": 20.116666666666806,
+        "player": {
+          "x": 104.89000000000286,
+          "y": 0,
+          "z": 0,
+          "pose": "standing",
+          "grounded": true,
+          "groundId": "bank-east",
+          "lives": 3,
+          "hp": 1,
+          "weapon": "rifle",
+          "rapid": true,
+          "invulnerableUntil": 1.5,
+          "lastDamage": "",
+          "bonusLives": false
+        },
+        "cameraX": 110.89000000000286,
+        "held": ["right"],
+        "shots": 2,
+        "enemyShots": 5,
+        "sparks": 0,
+        "enemies": 3,
+        "bridgesDestroyed": 15,
+        "bossHealth": 100,
+        "options": {
+          "mode": "classic",
+          "invincible": true
+        },
+        "performance": {
+          "frames": 600,
+          "frameMsP50": 16.69999999999709,
+          "frameMsP95": 32.900000000001455,
+          "renderMsMean": 0.34533333400885263,
+          "calls": 73,
+          "triangles": 2156,
+          "geometries": 72,
+          "textures": 2
+        }
+      }
+    },
+    {
+      "label": "soak-30s",
+      "state": {
+        "phase": "playing",
+        "time": 30.116666666666237,
+        "player": {
+          "x": 138.64000000000414,
+          "y": 0,
+          "z": 0,
+          "pose": "standing",
+          "grounded": true,
+          "groundId": "fortress-bank",
+          "lives": 3,
+          "hp": 1,
+          "weapon": "rifle",
+          "rapid": true,
+          "invulnerableUntil": 1.5,
+          "lastDamage": "",
+          "bonusLives": false
+        },
+        "cameraX": 136,
+        "held": [],
+        "shots": 0,
+        "enemyShots": 4,
+        "sparks": 0,
+        "enemies": 4,
+        "bridgesDestroyed": 15,
+        "bossHealth": 41,
+        "options": {
+          "mode": "classic",
+          "invincible": true
+        },
+        "performance": {
+          "frames": 600,
+          "frameMsP50": 16.700000000004366,
+          "frameMsP95": 41.5,
+          "renderMsMean": 0.3741666615009308,
+          "calls": 66,
+          "triangles": 1956,
+          "geometries": 72,
+          "textures": 2
+        }
+      }
+    },
+    {
+      "label": "soak-40s",
+      "state": {
+        "phase": "playing",
+        "time": 5.066666666666654,
+        "player": {
+          "x": 26.919999999999963,
+          "y": 0,
+          "z": 0,
+          "pose": "standing",
+          "grounded": true,
+          "groundId": "bridge-0-26",
+          "lives": 3,
+          "hp": 1,
+          "weapon": "rifle",
+          "rapid": true,
+          "invulnerableUntil": 1.5,
+          "lastDamage": "",
+          "bonusLives": false
+        },
+        "cameraX": 32.91999999999996,
+        "held": ["right"],
+        "shots": 2,
+        "enemyShots": 1,
+        "sparks": 8,
+        "enemies": 1,
+        "bridgesDestroyed": 0,
+        "bossHealth": 100,
+        "options": {
+          "mode": "classic",
+          "invincible": true
+        },
+        "performance": {
+          "frames": 600,
+          "frameMsP50": 16.89999999999418,
+          "frameMsP95": 42.5,
+          "renderMsMean": 0.3518333339691162,
+          "calls": 65,
+          "triangles": 1856,
+          "geometries": 72,
+          "textures": 2
+        }
+      }
+    },
+    {
+      "label": "soak-50s",
+      "state": {
+        "phase": "playing",
+        "time": 15.200000000000335,
+        "player": {
+          "x": 78.51333333333515,
+          "y": 0,
+          "z": 0,
+          "pose": "standing",
+          "grounded": true,
+          "groundId": "bridge-1-77",
+          "lives": 3,
+          "hp": 1,
+          "weapon": "rifle",
+          "rapid": true,
+          "invulnerableUntil": 1.5,
+          "lastDamage": "",
+          "bonusLives": false
+        },
+        "cameraX": 84.51333333333515,
+        "held": ["right"],
+        "shots": 3,
+        "enemyShots": 2,
+        "sparks": 14,
+        "enemies": 2,
+        "bridgesDestroyed": 12,
+        "bossHealth": 100,
+        "options": {
+          "mode": "classic",
+          "invincible": true
+        },
+        "performance": {
+          "frames": 600,
+          "frameMsP50": 16.80000000000291,
+          "frameMsP95": 25.80000000000291,
+          "renderMsMean": 0.33799999952316284,
+          "calls": 78,
+          "triangles": 2126,
+          "geometries": 72,
+          "textures": 2
+        }
+      }
+    },
+    {
+      "label": "soak-60s",
+      "state": {
+        "phase": "playing",
+        "time": 25.133333333333187,
+        "player": {
+          "x": 131.08000000000385,
+          "y": 0,
+          "z": 0,
+          "pose": "standing",
+          "grounded": true,
+          "groundId": "fortress-bank",
+          "lives": 3,
+          "hp": 1,
+          "weapon": "rifle",
+          "rapid": true,
+          "invulnerableUntil": 1.5,
+          "lastDamage": "",
+          "bonusLives": false
+        },
+        "cameraX": 136,
+        "held": ["right"],
+        "shots": 1,
+        "enemyShots": 5,
+        "sparks": 16,
+        "enemies": 5,
+        "bridgesDestroyed": 15,
+        "bossHealth": 100,
+        "options": {
+          "mode": "classic",
+          "invincible": true
+        },
+        "performance": {
+          "frames": 600,
+          "frameMsP50": 16.60000000000582,
+          "frameMsP95": 25,
+          "renderMsMean": 0.40450000047683715,
+          "calls": 92,
+          "triangles": 2394,
+          "geometries": 72,
+          "textures": 2
+        }
+      }
+    },
+    {
+      "label": "soak-70s",
+      "state": {
+        "phase": "playing",
+        "time": 0.7833333333333341,
+        "player": {
+          "x": 3.969999999999998,
+          "y": 0,
+          "z": 0,
+          "pose": "standing",
+          "grounded": true,
+          "groundId": "bank-west",
+          "lives": 3,
+          "hp": 1,
+          "weapon": "rifle",
+          "rapid": false,
+          "invulnerableUntil": 1.5,
+          "lastDamage": "",
+          "bonusLives": false
+        },
+        "cameraX": 12,
+        "held": ["right"],
+        "shots": 1,
+        "enemyShots": 0,
+        "sparks": 8,
+        "enemies": 3,
+        "bridgesDestroyed": 0,
+        "bossHealth": 100,
+        "options": {
+          "mode": "classic",
+          "invincible": true
+        },
+        "performance": {
+          "frames": 600,
+          "frameMsP50": 16.69999999999709,
+          "frameMsP95": 35.5,
+          "renderMsMean": 0.3729999985297521,
+          "calls": 81,
+          "triangles": 1922,
+          "geometries": 72,
+          "textures": 2
+        }
+      }
+    },
+    {
+      "label": "soak-80s",
+      "state": {
+        "phase": "playing",
+        "time": 10.733333333333446,
+        "player": {
+          "x": 54.57333333333425,
+          "y": 0,
+          "z": 0,
+          "pose": "standing",
+          "grounded": true,
+          "groundId": "island",
+          "lives": 3,
+          "hp": 1,
+          "weapon": "rifle",
+          "rapid": true,
+          "invulnerableUntil": 1.5,
+          "lastDamage": "",
+          "bonusLives": false
+        },
+        "cameraX": 60.57333333333425,
+        "held": ["right"],
+        "shots": 2,
+        "enemyShots": 2,
+        "sparks": 0,
+        "enemies": 2,
+        "bridgesDestroyed": 8,
+        "bossHealth": 100,
+        "options": {
+          "mode": "classic",
+          "invincible": true
+        },
+        "performance": {
+          "frames": 600,
+          "frameMsP50": 16.69999999999709,
+          "frameMsP95": 25.90000000000873,
+          "renderMsMean": 0.30749999980131787,
+          "calls": 73,
+          "triangles": 2088,
+          "geometries": 72,
+          "textures": 2
+        }
+      }
+    },
+    {
+      "label": "soak-90s",
+      "state": {
+        "phase": "playing",
+        "time": 20.816666666666766,
+        "player": {
+          "x": 107.95000000000297,
+          "y": 0,
+          "z": 0,
+          "pose": "standing",
+          "grounded": true,
+          "groundId": "bank-east",
+          "lives": 3,
+          "hp": 1,
+          "weapon": "rifle",
+          "rapid": true,
+          "invulnerableUntil": 1.5,
+          "lastDamage": "",
+          "bonusLives": false
+        },
+        "cameraX": 113.95000000000297,
+        "held": ["right"],
+        "shots": 2,
+        "enemyShots": 4,
+        "sparks": 16,
+        "enemies": 5,
+        "bridgesDestroyed": 15,
+        "bossHealth": 100,
+        "options": {
+          "mode": "classic",
+          "invincible": true
+        },
+        "performance": {
+          "frames": 600,
+          "frameMsP50": 16.69999999999709,
+          "frameMsP95": 26,
+          "renderMsMean": 0.34599999725818636,
+          "calls": 106,
+          "triangles": 2552,
+          "geometries": 72,
+          "textures": 2
+        }
+      }
+    },
+    {
+      "label": "soak-100s",
+      "state": {
+        "phase": "playing",
+        "time": 30.816666666666197,
+        "player": {
+          "x": 138.10000000000412,
+          "y": 0,
+          "z": 0,
+          "pose": "standing",
+          "grounded": true,
+          "groundId": "fortress-bank",
+          "lives": 3,
+          "hp": 1,
+          "weapon": "rifle",
+          "rapid": true,
+          "invulnerableUntil": 1.5,
+          "lastDamage": "",
+          "bonusLives": false
+        },
+        "cameraX": 136,
+        "held": [],
+        "shots": 1,
+        "enemyShots": 2,
+        "sparks": 0,
+        "enemies": 4,
+        "bridgesDestroyed": 15,
+        "bossHealth": 31,
+        "options": {
+          "mode": "classic",
+          "invincible": true
+        },
+        "performance": {
+          "frames": 600,
+          "frameMsP50": 16.60000000000582,
+          "frameMsP95": 25,
+          "renderMsMean": 0.3493333315849304,
+          "calls": 63,
+          "triangles": 1832,
+          "geometries": 72,
+          "textures": 3
+        }
+      }
+    },
+    {
+      "label": "soak-110s",
+      "state": {
+        "phase": "playing",
+        "time": 7.599999999999978,
+        "player": {
+          "x": 38.396666666666945,
+          "y": -2.4,
+          "z": 0,
+          "pose": "swimming",
+          "grounded": true,
+          "groundId": "river-one",
+          "lives": 3,
+          "hp": 1,
+          "weapon": "rifle",
+          "rapid": true,
+          "invulnerableUntil": 1.5,
+          "lastDamage": "",
+          "bonusLives": false
+        },
+        "cameraX": 44.396666666666945,
+        "held": ["right"],
+        "shots": 2,
+        "enemyShots": 3,
+        "sparks": 7,
+        "enemies": 2,
+        "bridgesDestroyed": 8,
+        "bossHealth": 100,
+        "options": {
+          "mode": "classic",
+          "invincible": true
+        },
+        "performance": {
+          "frames": 600,
+          "frameMsP50": 16.70000000001164,
+          "frameMsP95": 33.70000000001164,
+          "renderMsMean": 0.31449999888737995,
+          "calls": 71,
+          "triangles": 2132,
+          "geometries": 72,
+          "textures": 3
+        }
+      }
+    },
+    {
+      "label": "soak-121s",
+      "state": {
+        "phase": "playing",
+        "time": 17.750000000000274,
+        "player": {
+          "x": 91.48000000000235,
+          "y": 0,
+          "z": 0,
+          "pose": "standing",
+          "grounded": true,
+          "groundId": "bank-east",
+          "lives": 3,
+          "hp": 1,
+          "weapon": "rifle",
+          "rapid": true,
+          "invulnerableUntil": 1.5,
+          "lastDamage": "",
+          "bonusLives": false
+        },
+        "cameraX": 97.48000000000235,
+        "held": ["right"],
+        "shots": 2,
+        "enemyShots": 3,
+        "sparks": 8,
+        "enemies": 4,
+        "bridgesDestroyed": 15,
+        "bossHealth": 100,
+        "options": {
+          "mode": "classic",
+          "invincible": true
+        },
+        "performance": {
+          "frames": 600,
+          "frameMsP50": 24.70000000001164,
+          "frameMsP95": 59.40000000002328,
+          "renderMsMean": 0.3329999989271164,
+          "calls": 86,
+          "triangles": 2232,
+          "geometries": 72,
+          "textures": 3
+        }
+      }
+    },
+    {
+      "label": "soak-131s",
+      "state": {
+        "phase": "playing",
+        "time": 27.333333333333062,
+        "player": {
+          "x": 138.64000000000414,
+          "y": 0,
+          "z": 0,
+          "pose": "standing",
+          "grounded": true,
+          "groundId": "fortress-bank",
+          "lives": 3,
+          "hp": 1,
+          "weapon": "rifle",
+          "rapid": true,
+          "invulnerableUntil": 1.5,
+          "lastDamage": "",
+          "bonusLives": false
+        },
+        "cameraX": 136,
+        "held": [],
+        "shots": 0,
+        "enemyShots": 6,
+        "sparks": 0,
+        "enemies": 4,
+        "bridgesDestroyed": 15,
+        "bossHealth": 84,
+        "options": {
+          "mode": "classic",
+          "invincible": true
+        },
+        "performance": {
+          "frames": 600,
+          "frameMsP50": 25.10000000000582,
+          "frameMsP95": 86.69999999998254,
+          "renderMsMean": 0.39850000003973646,
+          "calls": 66,
+          "triangles": 2092,
+          "geometries": 72,
+          "textures": 3
+        }
+      }
+    },
+    {
+      "label": "soak-141s",
+      "state": {
+        "phase": "playing",
+        "time": 1.3000000000000003,
+        "player": {
+          "x": 5.319999999999996,
+          "y": 0,
+          "z": 0,
+          "pose": "standing",
+          "grounded": true,
+          "groundId": "bank-west",
+          "lives": 3,
+          "hp": 1,
+          "weapon": "rifle",
+          "rapid": false,
+          "invulnerableUntil": 1.5,
+          "lastDamage": "",
+          "bonusLives": false
+        },
+        "cameraX": 12,
+        "held": ["right"],
+        "shots": 2,
+        "enemyShots": 2,
+        "sparks": 8,
+        "enemies": 3,
+        "bridgesDestroyed": 0,
+        "bossHealth": 100,
+        "options": {
+          "mode": "classic",
+          "invincible": true
+        },
+        "performance": {
+          "frames": 600,
+          "frameMsP50": 25,
+          "frameMsP95": 78.89999999999418,
+          "renderMsMean": 0.42833333591620126,
+          "calls": 84,
+          "triangles": 2152,
+          "geometries": 72,
+          "textures": 3
+        }
+      }
+    },
+    {
+      "label": "soak-151s",
+      "state": {
+        "phase": "playing",
+        "time": 11.250000000000139,
+        "player": {
+          "x": 55.9233333333343,
+          "y": 0,
+          "z": 0,
+          "pose": "standing",
+          "grounded": true,
+          "groundId": "island",
+          "lives": 3,
+          "hp": 1,
+          "weapon": "rifle",
+          "rapid": true,
+          "invulnerableUntil": 1.5,
+          "lastDamage": "",
+          "bonusLives": false
+        },
+        "cameraX": 61.9233333333343,
+        "held": ["right"],
+        "shots": 3,
+        "enemyShots": 3,
+        "sparks": 0,
+        "enemies": 2,
+        "bridgesDestroyed": 8,
+        "bossHealth": 100,
+        "options": {
+          "mode": "classic",
+          "invincible": true
+        },
+        "performance": {
+          "frames": 600,
+          "frameMsP50": 23.300000000017462,
+          "frameMsP95": 56.39999999999418,
+          "renderMsMean": 0.36283333400885265,
+          "calls": 72,
+          "triangles": 2066,
+          "geometries": 72,
+          "textures": 3
+        }
+      }
+    },
+    {
+      "label": "soak-161s",
+      "state": {
+        "phase": "playing",
+        "time": 21.366666666666735,
+        "player": {
+          "x": 109.48000000000303,
+          "y": 0,
+          "z": 0,
+          "pose": "standing",
+          "grounded": true,
+          "groundId": "bank-east",
+          "lives": 3,
+          "hp": 1,
+          "weapon": "rifle",
+          "rapid": true,
+          "invulnerableUntil": 1.5,
+          "lastDamage": "",
+          "bonusLives": false
+        },
+        "cameraX": 115.48000000000303,
+        "held": ["right"],
+        "shots": 2,
+        "enemyShots": 4,
+        "sparks": 16,
+        "enemies": 4,
+        "bridgesDestroyed": 15,
+        "bossHealth": 100,
+        "options": {
+          "mode": "classic",
+          "invincible": true
+        },
+        "performance": {
+          "frames": 600,
+          "frameMsP50": 17.29999999998836,
+          "frameMsP95": 40.70000000001164,
+          "renderMsMean": 0.3601666698853175,
+          "calls": 97,
+          "triangles": 2444,
+          "geometries": 72,
+          "textures": 3
+        }
+      }
+    },
+    {
+      "label": "soak-171s",
+      "state": {
+        "phase": "playing",
+        "time": 31.43333333333283,
+        "player": {
+          "x": 138.82000000000414,
+          "y": 0,
+          "z": 0,
+          "pose": "standing",
+          "grounded": true,
+          "groundId": "fortress-bank",
+          "lives": 3,
+          "hp": 1,
+          "weapon": "rifle",
+          "rapid": true,
+          "invulnerableUntil": 1.5,
+          "lastDamage": "",
+          "bonusLives": false
+        },
+        "cameraX": 136,
+        "held": [],
+        "shots": 1,
+        "enemyShots": 4,
+        "sparks": 0,
+        "enemies": 4,
+        "bridgesDestroyed": 15,
+        "bossHealth": 31,
+        "options": {
+          "mode": "classic",
+          "invincible": true
+        },
+        "performance": {
+          "frames": 600,
+          "frameMsP50": 20.39999999999418,
+          "frameMsP95": 34,
+          "renderMsMean": 0.37816666801770527,
+          "calls": 66,
+          "triangles": 2014,
+          "geometries": 72,
+          "textures": 3
+        }
+      }
+    },
+    {
+      "label": "soak-181s",
+      "state": {
+        "phase": "playing",
+        "time": 7.04999999999998,
+        "player": {
+          "x": 36.880000000000166,
+          "y": -2.4,
+          "z": 0,
+          "pose": "swimming",
+          "grounded": true,
+          "groundId": "river-one",
+          "lives": 3,
+          "hp": 1,
+          "weapon": "rifle",
+          "rapid": true,
+          "invulnerableUntil": 1.5,
+          "lastDamage": "",
+          "bonusLives": false
+        },
+        "cameraX": 42.880000000000166,
+        "held": ["right"],
+        "shots": 2,
+        "enemyShots": 2,
+        "sparks": 14,
+        "enemies": 2,
+        "bridgesDestroyed": 7,
+        "bossHealth": 100,
+        "options": {
+          "mode": "classic",
+          "invincible": true
+        },
+        "performance": {
+          "frames": 600,
+          "frameMsP50": 17,
+          "frameMsP95": 41.59999999997672,
+          "renderMsMean": 0.34049999753634136,
+          "calls": 75,
+          "triangles": 2032,
+          "geometries": 72,
+          "textures": 3
+        }
+      }
+    },
+    {
+      "label": "soak-191s",
+      "state": {
+        "phase": "playing",
+        "time": 17.016666666666982,
+        "player": {
+          "x": 87.34000000000219,
+          "y": 0,
+          "z": 0,
+          "pose": "standing",
+          "grounded": true,
+          "groundId": "bank-east",
+          "lives": 3,
+          "hp": 1,
+          "weapon": "rifle",
+          "rapid": true,
+          "invulnerableUntil": 1.5,
+          "lastDamage": "",
+          "bonusLives": false
+        },
+        "cameraX": 93.34000000000219,
+        "held": ["right"],
+        "shots": 2,
+        "enemyShots": 3,
+        "sparks": 8,
+        "enemies": 5,
+        "bridgesDestroyed": 15,
+        "bossHealth": 100,
+        "options": {
+          "mode": "classic",
+          "invincible": true
+        },
+        "performance": {
+          "frames": 600,
+          "frameMsP50": 19.70000000001164,
+          "frameMsP95": 63.399999999994186,
+          "renderMsMean": 0.3418333321809769,
+          "calls": 94,
+          "triangles": 2272,
+          "geometries": 72,
+          "textures": 3
+        }
+      }
+    },
+    {
+      "label": "soak-201s",
+      "state": {
+        "phase": "playing",
+        "time": 26.899999999999753,
+        "player": {
+          "x": 138.46000000000413,
+          "y": 0,
+          "z": 0,
+          "pose": "standing",
+          "grounded": true,
+          "groundId": "fortress-bank",
+          "lives": 3,
+          "hp": 1,
+          "weapon": "rifle",
+          "rapid": true,
+          "invulnerableUntil": 1.5,
+          "lastDamage": "",
+          "bonusLives": false
+        },
+        "cameraX": 136,
+        "held": [],
+        "shots": 1,
+        "enemyShots": 7,
+        "sparks": 0,
+        "enemies": 4,
+        "bridgesDestroyed": 15,
+        "bossHealth": 84,
+        "options": {
+          "mode": "classic",
+          "invincible": true
+        },
+        "performance": {
+          "frames": 600,
+          "frameMsP50": 24.29999999998836,
+          "frameMsP95": 50.29999999998836,
+          "renderMsMean": 0.4146666665871938,
+          "calls": 68,
+          "triangles": 2242,
+          "geometries": 72,
+          "textures": 3
+        }
+      }
+    },
+    {
+      "label": "soak-211s",
+      "state": {
+        "phase": "playing",
+        "time": 1.7166666666666655,
+        "player": {
+          "x": 9.09999999999999,
+          "y": 0,
+          "z": 0,
+          "pose": "standing",
+          "grounded": true,
+          "groundId": "bank-west",
+          "lives": 3,
+          "hp": 1,
+          "weapon": "rifle",
+          "rapid": false,
+          "invulnerableUntil": 1.5,
+          "lastDamage": "",
+          "bonusLives": false
+        },
+        "cameraX": 15.09999999999999,
+        "held": ["right"],
+        "shots": 2,
+        "enemyShots": 2,
+        "sparks": 8,
+        "enemies": 2,
+        "bridgesDestroyed": 0,
+        "bossHealth": 100,
+        "options": {
+          "mode": "classic",
+          "invincible": true
+        },
+        "performance": {
+          "frames": 600,
+          "frameMsP50": 24.39999999999418,
+          "frameMsP95": 50.39999999999418,
+          "renderMsMean": 0.4108333319425583,
+          "calls": 76,
+          "triangles": 2046,
+          "geometries": 72,
+          "textures": 3
+        }
+      }
+    },
+    {
+      "label": "soak-221s",
+      "state": {
+        "phase": "playing",
+        "time": 11.750000000000163,
+        "player": {
+          "x": 60.15333333333446,
+          "y": 0,
+          "z": 0,
+          "pose": "standing",
+          "grounded": true,
+          "groundId": "island",
+          "lives": 3,
+          "hp": 1,
+          "weapon": "rifle",
+          "rapid": true,
+          "invulnerableUntil": 1.5,
+          "lastDamage": "",
+          "bonusLives": false
+        },
+        "cameraX": 66.15333333333446,
+        "held": ["right"],
+        "shots": 2,
+        "enemyShots": 3,
+        "sparks": 8,
+        "enemies": 3,
+        "bridgesDestroyed": 8,
+        "bossHealth": 100,
+        "options": {
+          "mode": "classic",
+          "invincible": true
+        },
+        "performance": {
+          "frames": 600,
+          "frameMsP50": 17,
+          "frameMsP95": 38.59999999997672,
+          "renderMsMean": 0.3401666661103567,
+          "calls": 92,
+          "triangles": 2316,
+          "geometries": 72,
+          "textures": 3
+        }
+      }
+    },
+    {
+      "label": "soak-231s",
+      "state": {
+        "phase": "playing",
+        "time": 21.85000000000004,
+        "player": {
+          "x": 113.62000000000319,
+          "y": 0,
+          "z": 0,
+          "pose": "standing",
+          "grounded": true,
+          "groundId": "bank-east",
+          "lives": 3,
+          "hp": 1,
+          "weapon": "rifle",
+          "rapid": true,
+          "invulnerableUntil": 1.5,
+          "lastDamage": "",
+          "bonusLives": false
+        },
+        "cameraX": 119.62000000000319,
+        "held": ["right"],
+        "shots": 2,
+        "enemyShots": 3,
+        "sparks": 8,
+        "enemies": 2,
+        "bridgesDestroyed": 15,
+        "bossHealth": 100,
+        "options": {
+          "mode": "classic",
+          "invincible": true
+        },
+        "performance": {
+          "frames": 600,
+          "frameMsP50": 17.29999999998836,
+          "frameMsP95": 33.20000000001164,
+          "renderMsMean": 0.3689999987681707,
+          "calls": 71,
+          "triangles": 2064,
+          "geometries": 72,
+          "textures": 3
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "Chromium desktop and CDP touch emulation; no physical phone or Safari hardware test.",
+    "Fixture scenarios are explicitly prepared through dev-only runtime; the full level run uses keyboard only and visibly enabled invincibility."
+  ],
+  "browser": "145.0.7632.6",
+  "journey": {
+    "clears": 1,
+    "durationMs": 33527,
+    "samples": [
+      {
+        "state": {
+          "phase": "playing",
+          "time": 0.26666666666666666,
+          "player": {
+            "x": 1.9000000000000008,
+            "y": 0,
+            "z": 0,
+            "pose": "standing",
+            "grounded": true,
+            "groundId": "bank-west",
+            "lives": 3,
+            "hp": 1,
+            "weapon": "rifle",
+            "rapid": false,
+            "invulnerableUntil": 1.5,
+            "lastDamage": "",
+            "bonusLives": false
+          },
+          "cameraX": 12,
+          "held": ["right"],
+          "shots": 1,
+          "enemyShots": 0,
+          "sparks": 0,
+          "enemies": 4,
+          "bridgesDestroyed": 0,
+          "bossHealth": 100,
+          "options": {
+            "mode": "classic",
+            "invincible": true
+          },
+          "performance": {
+            "frames": 52,
+            "frameMsP50": 16.5,
+            "frameMsP95": 58.200000000000045,
+            "renderMsMean": 0.721818167513067,
+            "calls": 82,
+            "triangles": 1934,
+            "geometries": 21,
+            "textures": 1
+          }
+        }
+      },
+      {
+        "state": {
+          "phase": "playing",
+          "time": 5.399999999999986,
+          "player": {
+            "x": 29.61999999999996,
+            "y": 0,
+            "z": 0,
+            "pose": "standing",
+            "grounded": true,
+            "groundId": "bridge-0-28",
+            "lives": 3,
+            "hp": 1,
+            "weapon": "rifle",
+            "rapid": true,
+            "invulnerableUntil": 1.5,
+            "lastDamage": "",
+            "bonusLives": false
+          },
+          "cameraX": 35.61999999999996,
+          "held": ["right"],
+          "shots": 3,
+          "enemyShots": 1,
+          "sparks": 7,
+          "enemies": 1,
+          "bridgesDestroyed": 1,
+          "bossHealth": 100,
+          "options": {
+            "mode": "classic",
+            "invincible": true
+          },
+          "performance": {
+            "frames": 367,
+            "frameMsP50": 16.599999999999966,
+            "frameMsP95": 25.59999999999991,
+            "renderMsMean": 0.37864864839089885,
+            "calls": 68,
+            "triangles": 1950,
+            "geometries": 41,
+            "textures": 2
+          }
+        }
+      },
+      {
+        "state": {
+          "phase": "playing",
+          "time": 10.450000000000099,
+          "player": {
+            "x": 53.76333333333422,
+            "y": 0,
+            "z": 0,
+            "pose": "standing",
+            "grounded": true,
+            "groundId": "island",
+            "lives": 3,
+            "hp": 1,
+            "weapon": "rifle",
+            "rapid": true,
+            "invulnerableUntil": 1.5,
+            "lastDamage": "",
+            "bonusLives": false
+          },
+          "cameraX": 59.76333333333422,
+          "held": ["right"],
+          "shots": 3,
+          "enemyShots": 3,
+          "sparks": 0,
+          "enemies": 2,
+          "bridgesDestroyed": 8,
+          "bossHealth": 100,
+          "options": {
+            "mode": "classic",
+            "invincible": true
+          },
+          "performance": {
+            "frames": 600,
+            "frameMsP50": 16.699999999999818,
+            "frameMsP95": 41.600000000000364,
+            "renderMsMean": 0.317000000278155,
+            "calls": 72,
+            "triangles": 2008,
+            "geometries": 48,
+            "textures": 2
+          }
+        }
+      },
+      {
+        "state": {
+          "phase": "playing",
+          "time": 15.583333333333687,
+          "player": {
+            "x": 81.25000000000193,
+            "y": -2.4,
+            "z": 0,
+            "pose": "swimming",
+            "grounded": true,
+            "groundId": "river-two",
+            "lives": 3,
+            "hp": 1,
+            "weapon": "rifle",
+            "rapid": true,
+            "invulnerableUntil": 1.5,
+            "lastDamage": "",
+            "bonusLives": false
+          },
+          "cameraX": 87.25000000000193,
+          "held": ["right"],
+          "shots": 2,
+          "enemyShots": 3,
+          "sparks": 21,
+          "enemies": 2,
+          "bridgesDestroyed": 15,
+          "bossHealth": 100,
+          "options": {
+            "mode": "classic",
+            "invincible": true
+          },
+          "performance": {
+            "frames": 600,
+            "frameMsP50": 16.699999999999818,
+            "frameMsP95": 50,
+            "renderMsMean": 0.3148333348830541,
+            "calls": 83,
+            "triangles": 2208,
+            "geometries": 58,
+            "textures": 2
+          }
+        }
+      },
+      {
+        "state": {
+          "phase": "playing",
+          "time": 20.68333333333344,
+          "player": {
+            "x": 107.95000000000297,
+            "y": 0,
+            "z": 0,
+            "pose": "standing",
+            "grounded": true,
+            "groundId": "bank-east",
+            "lives": 3,
+            "hp": 1,
+            "weapon": "rifle",
+            "rapid": true,
+            "invulnerableUntil": 1.5,
+            "lastDamage": "",
+            "bonusLives": false
+          },
+          "cameraX": 113.95000000000297,
+          "held": ["right"],
+          "shots": 2,
+          "enemyShots": 4,
+          "sparks": 16,
+          "enemies": 5,
+          "bridgesDestroyed": 15,
+          "bossHealth": 100,
+          "options": {
+            "mode": "classic",
+            "invincible": true
+          },
+          "performance": {
+            "frames": 600,
+            "frameMsP50": 16.700000000000728,
+            "frameMsP95": 42.5,
+            "renderMsMean": 0.32850000202655794,
+            "calls": 106,
+            "triangles": 2552,
+            "geometries": 64,
+            "textures": 2
+          }
+        }
+      },
+      {
+        "action": "gap-jump",
+        "state": {
+          "phase": "playing",
+          "time": 22.949999999999978,
+          "player": {
+            "x": 120.19000000000344,
+            "y": 0,
+            "z": 0,
+            "pose": "standing",
+            "grounded": true,
+            "groundId": "bank-east",
+            "lives": 3,
+            "hp": 1,
+            "weapon": "rifle",
+            "rapid": true,
+            "invulnerableUntil": 1.5,
+            "lastDamage": "",
+            "bonusLives": false
+          },
+          "cameraX": 126.19000000000344,
+          "held": ["right"],
+          "shots": 3,
+          "enemyShots": 2,
+          "sparks": 0,
+          "enemies": 2,
+          "bridgesDestroyed": 15,
+          "bossHealth": 100,
+          "options": {
+            "mode": "classic",
+            "invincible": true
+          },
+          "performance": {
+            "frames": 600,
+            "frameMsP50": 16.600000000002183,
+            "frameMsP95": 25.099999999998545,
+            "renderMsMean": 0.3248333348830541,
+            "calls": 58,
+            "triangles": 1750,
+            "geometries": 64,
+            "textures": 2
+          }
+        }
+      },
+      {
+        "state": {
+          "phase": "playing",
+          "time": 25.683333333333156,
+          "player": {
+            "x": 134.950000000004,
+            "y": 0,
+            "z": 0,
+            "pose": "standing",
+            "grounded": true,
+            "groundId": "fortress-bank",
+            "lives": 3,
+            "hp": 1,
+            "weapon": "rifle",
+            "rapid": true,
+            "invulnerableUntil": 1.5,
+            "lastDamage": "",
+            "bonusLives": false
+          },
+          "cameraX": 136,
+          "held": ["right"],
+          "shots": 1,
+          "enemyShots": 5,
+          "sparks": 0,
+          "enemies": 4,
+          "bridgesDestroyed": 15,
+          "bossHealth": 91,
+          "options": {
+            "mode": "classic",
+            "invincible": true
+          },
+          "performance": {
+            "frames": 600,
+            "frameMsP50": 16.69999999999891,
+            "frameMsP95": 25.899999999997817,
+            "renderMsMean": 0.34049999872843423,
+            "calls": 67,
+            "triangles": 2094,
+            "geometries": 72,
+            "textures": 2
+          }
+        }
+      },
+      {
+        "state": {
+          "phase": "playing",
+          "time": 30.583333333332877,
+          "player": {
+            "x": 138.55000000000413,
+            "y": 0,
+            "z": 0,
+            "pose": "standing",
+            "grounded": true,
+            "groundId": "fortress-bank",
+            "lives": 3,
+            "hp": 1,
+            "weapon": "rifle",
+            "rapid": true,
+            "invulnerableUntil": 1.5,
+            "lastDamage": "",
+            "bonusLives": false
+          },
+          "cameraX": 136,
+          "held": [],
+          "shots": 1,
+          "enemyShots": 3,
+          "sparks": 0,
+          "enemies": 4,
+          "bridgesDestroyed": 15,
+          "bossHealth": 34,
+          "options": {
+            "mode": "classic",
+            "invincible": true
+          },
+          "performance": {
+            "frames": 600,
+            "frameMsP50": 16.700000000000728,
+            "frameMsP95": 25.899999999997817,
+            "renderMsMean": 0.3729999977350235,
+            "calls": 65,
+            "triangles": 1934,
+            "geometries": 72,
+            "textures": 2
+          }
+        }
+      },
+      {
+        "action": "gap-jump",
+        "state": {
+          "phase": "playing",
+          "time": 22.916666666666647,
+          "player": {
+            "x": 120.01000000000343,
+            "y": 0,
+            "z": 0,
+            "pose": "standing",
+            "grounded": true,
+            "groundId": "bank-east",
+            "lives": 3,
+            "hp": 1,
+            "weapon": "rifle",
+            "rapid": true,
+            "invulnerableUntil": 1.5,
+            "lastDamage": "",
+            "bonusLives": false
+          },
+          "cameraX": 126.01000000000343,
+          "held": ["right"],
+          "shots": 2,
+          "enemyShots": 2,
+          "sparks": 0,
+          "enemies": 2,
+          "bridgesDestroyed": 15,
+          "bossHealth": 100,
+          "options": {
+            "mode": "classic",
+            "invincible": true
+          },
+          "performance": {
+            "frames": 600,
+            "frameMsP50": 16.700000000004366,
+            "frameMsP95": 41.200000000004366,
+            "renderMsMean": 0.3601666655143102,
+            "calls": 58,
+            "triangles": 1704,
+            "geometries": 72,
+            "textures": 2
+          }
+        }
+      },
+      {
+        "action": "gap-jump",
+        "state": {
+          "phase": "playing",
+          "time": 23.1333333333333,
+          "player": {
+            "x": 120.28000000000344,
+            "y": 0,
+            "z": 0,
+            "pose": "standing",
+            "grounded": true,
+            "groundId": "bank-east",
+            "lives": 3,
+            "hp": 1,
+            "weapon": "rifle",
+            "rapid": true,
+            "invulnerableUntil": 1.5,
+            "lastDamage": "",
+            "bonusLives": false
+          },
+          "cameraX": 126.28000000000344,
+          "held": ["right"],
+          "shots": 3,
+          "enemyShots": 2,
+          "sparks": 0,
+          "enemies": 2,
+          "bridgesDestroyed": 15,
+          "bossHealth": 100,
+          "options": {
+            "mode": "classic",
+            "invincible": true
+          },
+          "performance": {
+            "frames": 600,
+            "frameMsP50": 16.69999999999709,
+            "frameMsP95": 25.5,
+            "renderMsMean": 0.40800000031789146,
+            "calls": 58,
+            "triangles": 1750,
+            "geometries": 72,
+            "textures": 2
+          }
+        }
+      },
+      {
+        "action": "gap-jump",
+        "state": {
+          "phase": "playing",
+          "time": 23.066666666666638,
+          "player": {
+            "x": 120.10000000000343,
+            "y": 0,
+            "z": 0,
+            "pose": "standing",
+            "grounded": true,
+            "groundId": "bank-east",
+            "lives": 3,
+            "hp": 1,
+            "weapon": "rifle",
+            "rapid": true,
+            "invulnerableUntil": 1.5,
+            "lastDamage": "",
+            "bonusLives": false
+          },
+          "cameraX": 126.10000000000343,
+          "held": ["right"],
+          "shots": 3,
+          "enemyShots": 2,
+          "sparks": 0,
+          "enemies": 2,
+          "bridgesDestroyed": 15,
+          "bossHealth": 100,
+          "options": {
+            "mode": "classic",
+            "invincible": true
+          },
+          "performance": {
+            "frames": 600,
+            "frameMsP50": 16.69999999999709,
+            "frameMsP95": 25.80000000000291,
+            "renderMsMean": 0.3403333306312561,
+            "calls": 58,
+            "triangles": 1750,
+            "geometries": 72,
+            "textures": 2
+          }
+        }
+      },
+      {
+        "action": "gap-jump",
+        "state": {
+          "phase": "playing",
+          "time": 23.049999999999972,
+          "player": {
+            "x": 120.10000000000343,
+            "y": 0,
+            "z": 0,
+            "pose": "standing",
+            "grounded": true,
+            "groundId": "bank-east",
+            "lives": 3,
+            "hp": 1,
+            "weapon": "rifle",
+            "rapid": true,
+            "invulnerableUntil": 1.5,
+            "lastDamage": "",
+            "bonusLives": false
+          },
+          "cameraX": 126.10000000000343,
+          "held": ["right"],
+          "shots": 3,
+          "enemyShots": 2,
+          "sparks": 0,
+          "enemies": 2,
+          "bridgesDestroyed": 15,
+          "bossHealth": 100,
+          "options": {
+            "mode": "classic",
+            "invincible": true
+          },
+          "performance": {
+            "frames": 600,
+            "frameMsP50": 25,
+            "frameMsP95": 65.80000000001746,
+            "renderMsMean": 0.37216666599114734,
+            "calls": 57,
+            "triangles": 1680,
+            "geometries": 72,
+            "textures": 3
+          }
+        }
+      },
+      {
+        "action": "gap-jump",
+        "state": {
+          "phase": "playing",
+          "time": 23.416666666666618,
+          "player": {
+            "x": 120.55000000000345,
+            "y": 0,
+            "z": 0,
+            "pose": "standing",
+            "grounded": true,
+            "groundId": "bank-east",
+            "lives": 3,
+            "hp": 1,
+            "weapon": "rifle",
+            "rapid": true,
+            "invulnerableUntil": 1.5,
+            "lastDamage": "",
+            "bonusLives": false
+          },
+          "cameraX": 126.55000000000345,
+          "held": ["right"],
+          "shots": 3,
+          "enemyShots": 2,
+          "sparks": 0,
+          "enemies": 2,
+          "bridgesDestroyed": 15,
+          "bossHealth": 100,
+          "options": {
+            "mode": "classic",
+            "invincible": true
+          },
+          "performance": {
+            "frames": 600,
+            "frameMsP50": 17.20000000001164,
+            "frameMsP95": 40.79999999998836,
+            "renderMsMean": 0.3618333375453949,
+            "calls": 59,
+            "triangles": 1774,
+            "geometries": 72,
+            "textures": 3
+          }
+        }
+      },
+      {
+        "action": "gap-jump",
+        "state": {
+          "phase": "playing",
+          "time": 23.1333333333333,
+          "player": {
+            "x": 120.37000000000344,
+            "y": 0,
+            "z": 0,
+            "pose": "standing",
+            "grounded": true,
+            "groundId": "bank-east",
+            "lives": 3,
+            "hp": 1,
+            "weapon": "rifle",
+            "rapid": true,
+            "invulnerableUntil": 1.5,
+            "lastDamage": "",
+            "bonusLives": false
+          },
+          "cameraX": 126.37000000000344,
+          "held": ["right"],
+          "shots": 2,
+          "enemyShots": 2,
+          "sparks": 0,
+          "enemies": 2,
+          "bridgesDestroyed": 15,
+          "bossHealth": 100,
+          "options": {
+            "mode": "classic",
+            "invincible": true
+          },
+          "performance": {
+            "frames": 600,
+            "frameMsP50": 22.599999999976717,
+            "frameMsP95": 58.29999999998836,
+            "renderMsMean": 0.37916666686534883,
+            "calls": 57,
+            "triangles": 1680,
+            "geometries": 72,
+            "textures": 3
+          }
+        }
+      },
+      {
+        "action": "gap-jump",
+        "state": {
+          "phase": "playing",
+          "time": 23.199999999999964,
+          "player": {
+            "x": 120.91000000000346,
+            "y": 0,
+            "z": 0,
+            "pose": "standing",
+            "grounded": true,
+            "groundId": "bank-east",
+            "lives": 3,
+            "hp": 1,
+            "weapon": "rifle",
+            "rapid": true,
+            "invulnerableUntil": 1.5,
+            "lastDamage": "",
+            "bonusLives": false
+          },
+          "cameraX": 126.91000000000346,
+          "held": ["right"],
+          "shots": 3,
+          "enemyShots": 2,
+          "sparks": 0,
+          "enemies": 2,
+          "bridgesDestroyed": 15,
+          "bossHealth": 100,
+          "options": {
+            "mode": "classic",
+            "invincible": true
+          },
+          "performance": {
+            "frames": 600,
+            "frameMsP50": 17.20000000001164,
+            "frameMsP95": 33.30000000001746,
+            "renderMsMean": 0.367833331823349,
+            "calls": 59,
+            "triangles": 1842,
+            "geometries": 72,
+            "textures": 3
+          }
+        }
+      }
+    ],
+    "final": {
+      "phase": "victory",
+      "time": 33.26666666666606,
+      "player": {
+        "x": 138.55000000000413,
+        "y": 0,
+        "z": 0,
+        "pose": "standing",
+        "grounded": true,
+        "groundId": "fortress-bank",
+        "lives": 3,
+        "hp": 1,
+        "weapon": "rifle",
+        "rapid": true,
+        "invulnerableUntil": 1.5,
+        "lastDamage": "",
+        "bonusLives": false
+      },
+      "cameraX": 136,
+      "held": [],
+      "shots": 0,
+      "enemyShots": 0,
+      "sparks": 36,
+      "enemies": 0,
+      "bridgesDestroyed": 15,
+      "bossHealth": 0,
+      "options": {
+        "mode": "classic",
+        "invincible": true
+      },
+      "performance": {
+        "frames": 600,
+        "frameMsP50": 16.600000000002183,
+        "frameMsP95": 25.599999999998545,
+        "renderMsMean": 0.3646666649977366,
+        "calls": 80,
+        "triangles": 1852,
+        "geometries": 72,
+        "textures": 2
+      }
+    },
+    "runtimeMutation": false,
+    "assistance": "invincible selected in title UI"
+  },
+  "passed": false,
+  "failure": {
+    "message": "unexpected rescue/death at x=125.05000000000362: 坠入断崖",
+    "stack": "AssertionError [ERR_ASSERTION]: unexpected rescue/death at x=125.05000000000362: 坠入断崖\n    at playStep (file:///Users/magicliang/Desktop/Programming/git/my-games/%E9%AD%82%E6%96%97%E7%BD%97/tests/browser-smoke.mjs:248:14)\n    at async file:///Users/magicliang/Desktop/Programming/git/my-games/%E9%AD%82%E6%96%97%E7%BD%97/tests/browser-smoke.mjs:289:15\n    at async check (file:///Users/magicliang/Desktop/Programming/git/my-games/%E9%AD%82%E6%96%97%E7%BD%97/tests/browser-smoke.mjs:20:3)\n    at async file:///Users/magicliang/Desktop/Programming/git/my-games/%E9%AD%82%E6%96%97%E7%BD%97/tests/browser-smoke.mjs:281:7"
+  }
+}

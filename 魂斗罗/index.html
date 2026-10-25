@@ -3,104 +3,126 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta
-      name="description"
-      content="原创低多边形网页版 3D 魂斗罗：穿越丛林、桥梁与火力网，摧毁终点堡垒。"
-    />
+    <meta name="description" content="Three.js 渲染的横版魂斗罗丛林第一关：方向射击、伏地、桥梁与堡垒。" />
     <title>魂斗罗：丛林突击 3D</title>
   </head>
   <body>
-    <main id="game-shell" aria-label="魂斗罗 3D 游戏区域">
-      <div id="viewport"></div>
+    <main id="game-shell" aria-label="魂斗罗丛林第一关">
+      <div id="viewport" role="application" tabindex="-1" aria-label="游戏画面"></div>
       <div class="scanlines" aria-hidden="true"></div>
       <div class="vignette" aria-hidden="true"></div>
 
-      <header id="hud" class="hud" aria-live="polite">
-        <div class="hud__brand"><span>魂斗罗</span><small>JUNGLE STRIKE // 01</small></div>
-        <div class="hud__stat"><small>战士</small><strong id="lives">× 3</strong></div>
-        <div class="hud__stat"><small>武器</small><strong id="weapon">RIFLE</strong></div>
-        <div class="hud__stat"><small>得分</small><strong id="score">000000</strong></div>
+      <fieldset id="hud" class="hud"><legend class="sr-only">游戏状态</legend>
+        <div class="hud__brand"><span>魂斗罗</span><small>JUNGLE // 01</small></div>
+        <div class="hud__stat"><small>生命</small><strong id="lives">× 3</strong><span id="health"></span></div>
+        <div class="hud__stat"><small>武器</small><strong id="weapon">普通枪</strong></div>
+        <div class="hud__stat hud__score"><small>得分</small><strong id="score">000000</strong></div>
         <div class="hud__mission">
-          <small>堡垒距离</small>
+          <small>关卡推进</small>
           <div class="progress"><span id="progress-bar"></span></div>
           <strong id="progress-text">0%</strong>
         </div>
-      </header>
-
+      </fieldset>
+      <button id="pause-button" class="pause-button" type="button" aria-label="暂停游戏" hidden>暂停</button>
+      <div id="mode-badge" class="mode-badge" role="status">经典 · 无敌关闭</div>
+      <div id="damage-report" class="damage-report" role="status" hidden></div>
       <div id="boss-hud" class="boss-hud" hidden>
-        <span>防御核心</span>
-        <div class="boss-hud__track"><i id="boss-health"></i></div>
+        <span>堡垒核心</span><div class="boss-hud__track"><i id="boss-health"></i></div>
       </div>
+      <div id="objective" class="objective">任务：向右推进，击破堡垒核心</div>
+      <div id="toast" class="toast" role="status"></div>
 
-      <div id="objective" class="objective">任务：向东推进，摧毁丛林堡垒</div>
-      <div id="toast" class="toast" aria-live="assertive"></div>
-      <div id="crosshair" class="crosshair" aria-hidden="true"><i></i><i></i></div>
-
-      <section id="briefing" class="overlay overlay--visible">
+      <section id="briefing" class="overlay overlay--visible" aria-label="开始游戏">
         <div class="briefing-card">
-          <p class="eyebrow">RED FALCON // 绝密行动</p>
-          <h1>丛林突击<br /><em>3D</em></h1>
-          <p class="briefing-card__lead">
-            穿过浅水、两座爆破桥和密林火力点。击毁堡垒双炮与屋顶狙击手，再摧毁核心。
-          </p>
+          <p class="eyebrow">STAGE 01 // 丛林</p>
+          <h1>丛林突击 <em>3D</em></h1>
+          <p class="briefing-card__lead">横版战斗，方向射击。伏地躲弹、穿越爆破桥，击破终点堡垒。</p>
           <div class="briefing-card__controls">
-            <span><kbd>W A S D</kbd> 移动</span>
-            <span><kbd>空格</kbd> 跳跃</span>
-            <span><kbd>鼠标 / J</kbd> 瞄准射击</span>
-            <span><kbd>Esc</kbd> 暂停</span>
+            <span><kbd><span data-binding="left">A / ←</span> · <span data-binding="right">D / →</span></kbd> 左右移动</span>
+            <span><kbd><span data-binding="up">W / ↑</span> · <span data-binding="down">S / ↓</span></kbd> 瞄准 / 伏地</span>
+            <span><kbd data-binding="fire">J / Z</kbd> 射击（M可按住）</span>
+            <span><kbd data-binding="jump">K / 空格 / X</kbd> 跳跃</span>
           </div>
+          <fieldset class="game-options">
+            <legend>本次行动</legend>
+            <label for="game-mode">模式</label>
+            <select id="game-mode"><option value="classic" selected>经典 · 一击阵亡</option><option value="high-health">辅助 · 高血量</option></select>
+            <label class="check-option"><input id="invincible-option" type="checkbox" /> 辅助 · 无敌</label>
+          </fieldset>
           <div class="briefing-card__actions">
             <button id="start-button" class="button button--primary" type="button">开始行动</button>
-            <button id="manual-button" class="button" type="button">查看说明书</button>
+            <button id="manual-button" class="button" type="button">操作与设置</button>
           </div>
-          <small class="briefing-card__note">建议使用桌面 Chrome / Edge，并开启声音。</small>
+          <small class="briefing-card__note">支持 Mac 普通键盘与触屏。失焦自动暂停；点击“操作与设置”自定义键位。</small>
         </div>
       </section>
 
-      <section id="pause-panel" class="overlay" hidden>
+      <section id="pause-panel" class="overlay" aria-label="游戏已暂停" hidden>
         <div class="result-card">
-          <p class="eyebrow">行动暂停</p>
-          <h2>保持警戒</h2>
-          <p>按 <kbd>Esc</kbd> 返回战场</p>
+          <p class="eyebrow">行动暂停</p><h2>保持警戒</h2>
+          <p>游戏计时已冻结。按 <kbd data-binding="pause">Esc</kbd> 或点击继续。</p>
+          <div class="briefing-card__actions">
+            <button id="resume-button" class="button button--primary" type="button">继续行动</button>
+            <button id="pause-settings-button" class="button" type="button">操作与设置</button>
+          </div>
+          <button id="pause-restart-button" class="button button--quiet" type="button">从头重新开始</button>
         </div>
       </section>
 
-      <section id="result-panel" class="overlay" hidden>
+      <section id="result-panel" class="overlay" aria-label="任务结算" hidden>
         <div class="result-card">
-          <p id="result-kicker" class="eyebrow"></p>
-          <h2 id="result-title">任务结算</h2>
+          <p id="result-kicker" class="eyebrow"></p><h2 id="result-title">任务结算</h2>
           <p id="result-copy"></p>
           <button id="restart-button" class="button button--primary" type="button">重新出击</button>
         </div>
       </section>
 
       <dialog id="manual-dialog" class="manual">
-        <form method="dialog">
-          <button class="manual__close" type="submit" aria-label="关闭说明书">×</button>
-        </form>
-        <p class="eyebrow">FIELD MANUAL // 说明书</p>
-        <h2>丛林作战守则</h2>
+        <form method="dialog"><button class="manual__close" type="submit" aria-label="关闭操作与设置">×</button></form>
+        <p class="eyebrow">FIELD MANUAL // 操作与设置</p><h2>作战守则</h2>
         <ol>
-          <li><strong>推进</strong>：WASD 在 3D 战场移动，空格跳过火线和高差。</li>
-          <li><strong>射击</strong>：鼠标控制准星，按住左键或 J 连射。准星越高，弹道越高。</li>
-          <li><strong>武器</strong>：依次可拾取 R 快射、S 散弹、L 激光；阵亡后恢复步枪。</li>
-          <li><strong>生命</strong>：敌弹一击损失一条命，短暂无敌后从最近检查点复活。</li>
-          <li><strong>堡垒</strong>：先清除两门守卫炮和屋顶狙击手，核心才会解除护盾。</li>
-          <li><strong>经典秘籍</strong>：标题页输入 ↑ ↑ ↓ ↓ ← → ← → B A Enter，可获得 30 条命。</li>
+          <li><strong>移动与射击：</strong>左右移动，方向键组合控制弹道；地面按下伏地，空中可向下射击。普通枪、F、S、L 按次射击，M 可按住连射；鼠标不参与瞄准。</li>
+          <li><strong>平台与水：</strong>下 + 跳跃穿过单向平台；入水后按下潜伏，左右游泳到岸边上岸；水中不能跳跃或向下射击。</li>
+          <li><strong>装备：</strong>M 连射、F 火球、S 五向散弹、L 激光；R 为加速强化，L 不受 R 加速。阵亡失去武器强化。</li>
+          <li><strong>战场：</strong>桥梁会逐段坍塌；镜头向右推进。堡垒核心可以直接攻击，守卫火力仍需躲避。</li>
+          <li><strong>辅助：</strong>默认经典且无敌关闭。高血量或无敌在开局前选择，战斗中持续标记；标题页输入 ↑ ↑ ↓ ↓ ← → ← → B A Enter 可启用 30 命。</li>
         </ol>
-        <p class="manual__tip">提示：桥面爆炸采用红白机版规则，只制造压迫感，不会直接伤害你。</p>
+        <h3>自定义按键</h3>
+        <p class="settings-help">点击一项后按新键。该项原有快捷键会被替换；同一按键不能分配给两个动作。</p>
+        <div id="key-bindings" class="key-bindings">
+          <button type="button" data-bind="up"><span>向上瞄准</span><kbd data-binding="up">W / ↑</kbd></button>
+          <button type="button" data-bind="down"><span>伏地 / 潜水</span><kbd data-binding="down">S / ↓</kbd></button>
+          <button type="button" data-bind="left"><span>向左</span><kbd data-binding="left">A / ←</kbd></button>
+          <button type="button" data-bind="right"><span>向右</span><kbd data-binding="right">D / →</kbd></button>
+          <button type="button" data-bind="fire"><span>射击</span><kbd data-binding="fire">J / Z</kbd></button>
+          <button type="button" data-bind="jump"><span>跳跃</span><kbd data-binding="jump">K / 空格 / X</kbd></button>
+          <button type="button" data-bind="pause"><span>暂停 / 继续</span><kbd data-binding="pause">Esc</kbd></button>
+        </div>
+        <p id="binding-message" class="binding-message" role="status">键位自动保存到本浏览器。</p>
+        <div class="settings-actions">
+          <button id="cancel-binding" class="button" type="button" hidden>取消改键</button>
+          <button id="reset-bindings" class="button" type="button">恢复默认键位</button>
+          <label class="check-option"><input id="touch-option" type="checkbox" /> 显示触屏按键</label>
+        </div>
       </dialog>
 
-      <fieldset class="touch-controls">
+      <fieldset id="touch-controls" class="touch-controls" hidden>
         <legend class="sr-only">触屏控制</legend>
         <div class="touch-pad">
-          <button type="button" data-hold="KeyW">▲</button>
-          <button type="button" data-hold="KeyA">◀</button>
-          <button type="button" data-hold="KeyS">▼</button>
-          <button type="button" data-hold="KeyD">▶</button>
+          <button type="button" data-hold="up left" aria-label="左上瞄准">↖</button>
+          <button type="button" data-hold="up" aria-label="向上瞄准">↑</button>
+          <button type="button" data-hold="up right" aria-label="右上瞄准">↗</button>
+          <button type="button" data-hold="left" aria-label="向左移动">←</button>
+          <span aria-hidden="true">＋</span>
+          <button type="button" data-hold="right" aria-label="向右移动">→</button>
+          <button type="button" data-hold="down left" aria-label="左下瞄准">↙</button>
+          <button type="button" data-hold="down" aria-label="伏地或潜水">↓</button>
+          <button type="button" data-hold="down right" aria-label="右下瞄准">↘</button>
         </div>
-        <button class="touch-action touch-action--jump" type="button" data-hold="Space">跳</button>
-        <button class="touch-action touch-action--fire" type="button" data-hold="KeyJ">火</button>
+        <div class="touch-actions">
+          <button class="touch-action--jump" type="button" data-hold="jump" aria-label="跳跃">跳</button>
+          <button class="touch-action--fire" type="button" data-hold="fire" aria-label="射击">火</button>
+        </div>
       </fieldset>
     </main>
     <script type="module" src="/src/main.ts"></script>

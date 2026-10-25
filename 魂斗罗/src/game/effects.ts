@@ -1,80 +1,92 @@
 import * as THREE from "three";
-
 import { createSpark } from "./models";
 import type { GameRuntime } from "./runtime";
+import { BRIDGES, VIEW_WIDTH } from "./stage";
+import { landingSurface } from "./terrain";
 import type { Vector } from "./types";
 
-type ExplosionSpec = {
-  readonly position: Vector;
-  readonly color: number;
-  readonly count: number;
-};
-
+type ExplosionSpec = { readonly position: Vector; readonly color: number; readonly count: number };
 export function spawnExplosion(runtime: GameRuntime, spec: ExplosionSpec): void {
   runtime.audio.explosion();
-  for (let index = 0; index < spec.count; index += 1) {
+  for (let index = 0; index < spec.count && runtime.sparks.length < 160; index++) {
     const mesh = createSpark(index % 3 === 0 ? 0xffd65a : spec.color);
-    mesh.position.set(spec.position.x, spec.position.y, spec.position.z);
+    mesh.position.set(spec.position.x, spec.position.y + 0.5, 0.3);
     runtime.scene.add(mesh);
     const angle = (index / spec.count) * Math.PI * 2;
     runtime.sparks.push({
       mesh,
-      velocity: new THREE.Vector3(
-        Math.cos(angle) * (2 + Math.random() * 3),
-        2 + Math.random() * 4,
-        Math.sin(angle) * 3,
-      ),
-      life: 0.55 + Math.random() * 0.55,
+      velocity: new THREE.Vector3(Math.cos(angle) * 3, Math.sin(angle) * 3 + 2, 0),
+      life: 0.6,
     });
   }
 }
-
 export function updateEffects(runtime: GameRuntime, delta: number, now: number): void {
-  for (let index = runtime.sparks.length - 1; index >= 0; index -= 1) {
+  for (let index = runtime.sparks.length - 1; index >= 0; index--) {
     const spark = runtime.sparks[index];
-    if (spark === undefined) continue;
+    if (!spark) continue;
     spark.life -= delta;
     spark.velocity.y -= 10 * delta;
     spark.mesh.position.addScaledVector(spark.velocity, delta);
-    spark.mesh.rotation.x += delta * 9;
+    spark.mesh.rotation.z += delta * 9;
     if (spark.life <= 0) {
       runtime.scene.remove(spark.mesh);
       runtime.sparks.splice(index, 1);
     }
   }
+  for (const container of runtime.containers) {
+    if (!container.alive) continue;
+    if (container.activatedAt < 0 && container.startX < runtime.cameraX + VIEW_WIDTH / 2)
+      container.activatedAt = now;
+    container.mesh.visible =
+      container.activatedAt >= 0 &&
+      Math.abs(container.mesh.position.x - runtime.cameraX) < VIEW_WIDTH / 2 + 2;
+    if (container.activatedAt >= 0 && container.flying) {
+      const age = now - container.activatedAt;
+      container.mesh.position.x = container.startX + Math.sin(age * 0.65) * 2.5;
+      container.mesh.position.y = container.startY + Math.sin(age * 2) * 0.55;
+    }
+  }
   for (const pickup of runtime.pickups) {
-    if (pickup.collected) continue;
-    pickup.mesh.rotation.y = now * 1.8;
-    pickup.mesh.position.y += Math.sin(now * 3 + pickup.mesh.position.x) * delta * 0.18;
+    if (pickup.collected || !pickup.released) continue;
+    const before = pickup.mesh.position.y;
+    pickup.velocityY -= 12 * delta;
+    const next = before + pickup.velocityY * delta;
+    const surface =
+      pickup.velocityY <= 0
+        ? landingSurface(runtime, pickup.mesh.position.x, before - 0.3, next - 0.3, false)
+        : undefined;
+    if (surface) {
+      pickup.mesh.position.y = surface.y + 0.3;
+      pickup.velocityY = 0;
+    } else pickup.mesh.position.y = next;
+    if (pickup.mesh.position.y < -7) {
+      pickup.collected = true;
+      pickup.mesh.visible = false;
+    }
   }
 }
-
 export function updateStageEvents(runtime: GameRuntime): void {
   const x = runtime.player.model.root.position.x;
-  if (x > 31 && !runtime.triggers.has("bridge-one")) {
-    runtime.triggers.add("bridge-one");
-    runtime.ui.toast("前方桥面爆破！保持移动");
-    for (const blastX of [34, 38, 42]) {
-      spawnExplosion(runtime, {
-        position: { x: blastX, y: 0.3, z: 0 },
-        color: 0xff4f14,
-        count: 11,
-      });
+  const now = runtime.simulationTime;
+  for (const [index, bridge] of BRIDGES.entries()) {
+    const key = `bridge-${index}`;
+    if (x >= bridge.start - 0.2 && !runtime.triggers.has(key)) {
+      runtime.triggers.add(key);
+      runtime.ui.toast("桥面即将坍塌 · 水中按下潜伏，游向岸边");
+      let sequence = 0;
+      for (const segment of runtime.bridges)
+        if (segment.bridge === index) segment.explodeAt = now + 0.8 + sequence++ * 0.25;
     }
   }
-  if (x > 79 && !runtime.triggers.has("bridge-two")) {
-    runtime.triggers.add("bridge-two");
-    runtime.ui.toast("第二爆破桥：敌军增援抵达");
-    for (const blastX of [82, 86, 90]) {
-      spawnExplosion(runtime, {
-        position: { x: blastX, y: 0.3, z: 0 },
-        color: 0xff4f14,
-        count: 11,
-      });
+  for (const segment of runtime.bridges) {
+    if (!segment.destroyed && now >= segment.explodeAt) {
+      segment.destroyed = true;
+      segment.mesh.visible = false;
+      spawnExplosion(runtime, { position: segment.mesh.position, color: 0xff743d, count: 7 });
     }
   }
-  if (x > 132 && !runtime.triggers.has("boss")) {
+  if (x > 130 && !runtime.triggers.has("boss")) {
     runtime.triggers.add("boss");
-    runtime.ui.toast("堡垒进入射程：先摧毁三处守卫火力");
+    runtime.ui.toast("堡垒：攻击底部红色核心 · 双炮可先行清除");
   }
 }
