@@ -68,6 +68,10 @@ button {
   transform: translateY(-160%);
 }
 
+.skip-link:not(:focus) {
+  visibility: hidden;
+}
+
 .skip-link:focus {
   transform: translateY(0);
 }
@@ -230,7 +234,7 @@ canvas:focus-visible {
 
 .screen-shell {
   position: relative;
-  aspect-ratio: 2 / 3;
+  aspect-ratio: 16 / 15;
   overflow: hidden;
   border: 6px solid #050914;
   border-radius: 14px;
@@ -251,13 +255,14 @@ canvas:focus-visible {
 }
 
 #world-canvas {
+  image-rendering: pixelated;
   z-index: 0;
 }
 
 #game-canvas {
   z-index: 1;
   cursor: crosshair;
-  image-rendering: auto;
+  image-rendering: pixelated;
 }
 
 .overlay,
@@ -274,7 +279,7 @@ canvas:focus-visible {
   visibility: hidden;
   background: rgb(7 12 26 / 72%);
   opacity: 0;
-  backdrop-filter: blur(8px);
+  backdrop-filter: none;
   transition: opacity 220ms ease-in-out, visibility 220ms;
 }
 
@@ -285,10 +290,12 @@ canvas:focus-visible {
 
 .overlay__panel {
   width: min(380px, 100%);
-  padding: clamp(var(--s4), 5vw, var(--s8));
+  max-height: 100%;
+  overflow-y: auto;
+  padding: clamp(var(--s3), 3vw, var(--s6));
   color: var(--text-dark);
   border: 4px solid var(--text-dark);
-  border-radius: 18px;
+  border-radius: 4px;
   background: #f7fbff;
   box-shadow: 10px 10px 0 rgb(255 212 71 / 92%);
   transform: translateY(16px) scale(0.97);
@@ -320,7 +327,7 @@ canvas:focus-visible {
   display: flex;
   gap: var(--s2);
   flex-wrap: wrap;
-  margin-top: var(--s6);
+  margin-top: var(--s4);
 }
 
 .overlay .button--secondary {
@@ -677,4 +684,114 @@ summary {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
   }
+}
+
+@media (max-width: 560px) {
+  .overlay { padding: 8px; }
+  .overlay__panel { padding: 12px; box-shadow: 4px 4px 0 var(--accent); }
+  .overlay h2 { font-size: 1.35rem; margin-bottom: 8px; }
+  .overlay__kicker { font-size: 0.65rem; margin-bottom: 4px; }
+  .overlay p:not(.overlay__kicker) { font-size: 0.78rem; line-height: 1.4; }
+  .overlay__actions { gap: 6px; margin-top: 10px; }
+  .overlay__actions .button { min-height: 44px; padding: 8px 10px; font-size: 0.78rem; }
+  .stage-picker { margin-top: 8px; gap: 4px; }
+  .stage-picker button { min-height: 44px; min-width: 36px; }
+}
+
+
+.game-settings {
+  margin-top: var(--s6);
+  padding: var(--s3);
+  border: 1px solid rgb(237 246 255 / 24%);
+  border-radius: 8px;
+  background: var(--shell-low);
+}
+
+.game-settings__heading,
+.game-settings__row,
+.game-settings__bindings {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: var(--s2);
+}
+
+.game-settings__heading {
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--s3);
+}
+
+.game-settings h2,
+.assist-status {
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+.assist-status {
+  color: var(--accent);
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.settings-field {
+  display: grid;
+  flex: 1 1 112px;
+  min-width: 0;
+  gap: 5px;
+}
+
+.settings-field--health {
+  flex: 0 1 94px;
+}
+
+.settings-field label {
+  color: rgb(248 251 255 / 82%);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.settings-field select,
+.settings-field input {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 8px;
+  color: var(--text);
+  border: 1px solid rgb(237 246 255 / 36%);
+  border-radius: 5px;
+  background: var(--shell-raised);
+  font: inherit;
+}
+
+.settings-field select:focus-visible,
+.settings-field input:focus-visible {
+  outline: 3px dashed var(--accent);
+  outline-offset: 3px;
+}
+
+.game-settings__row > .button,
+.game-settings__bindings > .button {
+  min-height: 44px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  overflow-wrap: anywhere;
+}
+
+.game-settings__bindings > .button {
+  flex: 1 1 105px;
+  min-width: 0;
+}
+
+.game-settings__help {
+  margin: 8px 0 12px;
+  color: rgb(248 251 255 / 67%);
+  font-size: 0.73rem;
+  line-height: 1.6;
+}
+
+.game-settings__help:last-child {
+  margin-bottom: 0;
 }

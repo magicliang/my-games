@@ -1,253 +1,131 @@
-import assert from "node:assert/strict";
-import { mkdir, writeFile } from "node:fs/promises";
+import assert from 'node:assert/strict';
+import { mkdir, writeFile } from 'node:fs/promises';
+import { createRequire } from 'node:module';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+import path from 'node:path';
+const require = createRequire(import.meta.url);
+const { chromium } = require(process.env.TWINBEE_PLAYWRIGHT_PATH || 'playwright');
+const url = process.env.TWINBEE_URL || 'http://127.0.0.1:4173';
+const out = process.env.TWINBEE_QA_DIR || '/private/tmp/twinbee-fc-qa';
+await mkdir(out, { recursive: true });
+const browser = await chromium.launch({ headless: true, ...(process.env.TWINBEE_BROWSER_CHANNEL ? { channel: process.env.TWINBEE_BROWSER_CHANNEL } : {}) });
+const results = [], errors = [];
+try {
+  const page = await browser.newPage({ viewport: { width: 1280, height: 1000 } });
+  page.on('pageerror', error => errors.push(error.message));
+  await page.goto(url); await page.waitForLoadState('networkidle');
+  assert.equal(await page.title(), '兵蜂 FC | 经典纵向射击');
+  assert.equal(await page.evaluate(() => workerBeeDebug.renderInfo().kind), 'canvas2d');
+  assert.equal(await page.evaluate(() => typeof workerBeeDebug.state), 'undefined', '正常页面不能有修改状态的调试接口');
+  await page.locator('#sound-button').click();
+  await page.locator('#start-button').click();
+  const snapshot = () => page.evaluate(() => workerBeeDebug.snapshot());
+  const first = await snapshot();
+  await page.keyboard.down('KeyA'); await page.waitForTimeout(200); await page.keyboard.up('KeyA');
+  const left = await snapshot();
+  assert.ok(left.player.x < first.player.x); assert.equal(left.bombs, 0); assert.equal(left.playerShots, 0);
+  await page.keyboard.down('Space'); await page.waitForFunction(() => workerBeeDebug.snapshot().playerShots > 0); await page.keyboard.up('Space');
+  assert.ok((await snapshot()).playerShots > 0, JSON.stringify({ first, left, after: await snapshot(), focused: await page.evaluate(() => document.activeElement?.id) }));
+  await page.keyboard.press('KeyP');
+  const paused = await snapshot(); await page.waitForTimeout(150);
+  assert.equal((await snapshot()).stageTime, paused.stageTime);
+  results.push('真实键盘：A只左移，空格射击，P暂停停止模拟');
 
-const debuggerUrl = process.env.WORKER_BEE_DEBUGGER_URL || "http://127.0.0.1:9223/json/list";
-const outputDir = process.env.WORKER_BEE_QA_DIR || "/private/tmp/workerbee-qa";
-const tabs = await fetch(debuggerUrl).then((response) => response.json());
-const tab = tabs.find((candidate) => candidate.type === "page" && candidate.url.startsWith("http://127.0.0.1:4173"));
-assert.ok(tab, "没有找到工蜂浏览器页面");
+  await page.locator('#assist-mode').selectOption('armor'); await page.locator('#armor-health').fill('25'); await page.locator('#assist-apply').click();
+  assert.deepEqual((await snapshot()).assist, { mode:'armor', health:25 });
+  assert.equal((await snapshot()).players[0].health, 25);
+  await page.locator('#assist-mode').selectOption('invincible'); await page.locator('#assist-apply').click();
+  assert.equal((await snapshot()).assist.mode, 'invincible');
+  assert.match(await page.locator('#assist-status').textContent(), /无敌/);
+  await page.locator('#fire-binding').click(); await page.keyboard.press('KeyA');
+  assert.equal((await snapshot()).bindings.fire, 'Space', '不能把移动键设成射击');
+  await page.keyboard.press('KeyL');
+  assert.equal((await snapshot()).bindings.fire, 'KeyL');
+  await page.locator('#bomb-binding').click(); await page.keyboard.press('KeyL');
+  assert.equal((await snapshot()).bindings.bomb, 'KeyF', '两个动作不能占同一键');
+  await page.keyboard.press('Escape');
+  await page.reload(); await page.waitForLoadState('networkidle');
+  assert.equal((await snapshot()).bindings.fire, 'KeyL');
+  await page.locator('#reset-bindings').click();
+  assert.deepEqual((await snapshot()).bindings, {fire:'Space',bomb:'KeyF'});
+  results.push('设置UI：25血、切无敌、移动键/重复键冲突、Esc取消、刷新保留改键、恢复默认');
 
-await mkdir(outputDir, { recursive: true });
-const socket = new WebSocket(tab.webSocketDebuggerUrl);
-await new Promise((resolve, reject) => {
-  socket.addEventListener("open", resolve, { once: true });
-  socket.addEventListener("error", reject, { once: true });
-});
+  await page.locator('#two-player-button').click();
+  const dualStart = await snapshot();
+  await page.keyboard.down('ArrowLeft'); await page.waitForTimeout(150); await page.keyboard.up('ArrowLeft');
+  const dualMoved = await snapshot();
+  assert.equal(dualMoved.players[0].x, dualStart.players[0].x); assert.ok(dualMoved.players[1].x < dualStart.players[1].x);
+  await page.keyboard.down('Comma'); await page.waitForFunction(() => workerBeeDebug.snapshot().playerShots > 0); await page.keyboard.up('Comma');
+  assert.ok((await snapshot()).playerShots > 0);
+  await page.screenshot({path:path.join(out,'dual-game.png'),fullPage:true});
+  results.push('真实双人键盘：箭头只控制2P，逗号开火');
 
-let requestId = 0;
-const pending = new Map();
-const consoleErrors = [];
-
-socket.addEventListener("message", (event) => {
-  const message = JSON.parse(event.data);
-  if (message.id) {
-    const entry = pending.get(message.id);
-    if (!entry) return;
-    pending.delete(message.id);
-    if (message.error) entry.reject(new Error(message.error.message));
-    else entry.resolve(message.result);
-    return;
-  }
-  if (message.method === "Runtime.exceptionThrown") {
-    const details = message.params.exceptionDetails;
-    consoleErrors.push(details.exception?.description || details.text);
-  }
-  if (message.method === "Runtime.consoleAPICalled" && message.params.type === "error") {
-    consoleErrors.push(message.params.args.map((arg) => arg.value || arg.description).join(" "));
-  }
-});
-
-function send(method, params = {}) {
-  const id = ++requestId;
-  socket.send(JSON.stringify({ id, method, params }));
-  return new Promise((resolve, reject) => pending.set(id, { resolve, reject }));
-}
-
-function wait(milliseconds) {
-  return new Promise((resolve) => setTimeout(resolve, milliseconds));
-}
-
-async function evaluate(expression) {
-  const response = await send("Runtime.evaluate", {
-    expression,
-    awaitPromise: true,
-    returnByValue: true,
+  // Deterministic fixtures use the same engine as normal play, behind ?debug only.
+  await page.goto(url + '/?debug=1'); await page.waitForLoadState('networkidle');
+  await page.locator('#assist-mode').selectOption('invincible'); await page.locator('#assist-apply').click();
+  await page.locator('#start-button').click();
+  await page.evaluate(() => workerBeeDebug.manual(true));
+  await page.evaluate(() => {
+    const s = workerBeeDebug.state(); s.player.invulnerable = 0;
+    for(let i=0;i<100;i++) { WorkerBeeEngine.hurt(s,s.player); WorkerBeeEngine.hurt(s,s.player,true); }
   });
-  if (response.exceptionDetails) throw new Error(response.exceptionDetails.text);
-  return response.result.value;
-}
+  assert.equal((await snapshot()).lives, 3); assert.deepEqual((await snapshot()).arms,{left:true,right:true});
+  await page.locator('#assist-mode').selectOption('armor'); await page.locator('#armor-health').fill('12'); await page.locator('#assist-apply').click();
+  await page.evaluate(() => { const s=workerBeeDebug.state(); s.player.invulnerable=0; WorkerBeeEngine.hurt(s,s.player); });
+  assert.equal((await snapshot()).players[0].health, 11);
+  await page.locator('#assist-mode').selectOption('invincible'); await page.locator('#assist-apply').click();
+  await page.evaluate(() => {
+    const s=workerBeeDebug.state(); s.groundTargets=[{x:s.player.x,y:s.player.y-70,radius:13,kind:'bush',fireClock:9,hp:1}];
+    workerBeeDebug.manual(false);
+  });
+  await page.keyboard.down('KeyF');
+  await page.waitForFunction(() => workerBeeDebug.snapshot().bombs > 0, {timeout:2000});
+  await page.keyboard.up('KeyF');
+  await page.waitForFunction(() => workerBeeDebug.snapshot().players[0].score >= 500, {timeout:2000});
+  await page.evaluate(() => workerBeeDebug.manual(true));
+  results.push('同引擎fixture：200次伤害无敌不掉臂/残机；12血中弹到11；真实F键锁定炸毁地物');
 
-async function key(code, keyValue, duration = 180) {
-  const keyCode = keyValue.length === 1 ? keyValue.toUpperCase().charCodeAt(0) : 0;
-  await send("Input.dispatchKeyEvent", { type: "keyDown", code, key: keyValue, windowsVirtualKeyCode: keyCode });
-  await wait(duration);
-  await send("Input.dispatchKeyEvent", { type: "keyUp", code, key: keyValue, windowsVirtualKeyCode: keyCode });
-}
-
-async function screenshot(name, fullPage = false) {
-  let clip;
-  if (fullPage) {
-    const metrics = await send("Page.getLayoutMetrics");
-    const { width, height } = metrics.cssContentSize;
-    clip = { x: 0, y: 0, width, height, scale: 1 };
+  for (let stage=0;stage<5;stage++) {
+    await page.evaluate(stage => { workerBeeDebug.start(stage,1); workerBeeDebug.manual(true); workerBeeDebug.spawnBoss(); workerBeeDebug.step(160); },stage);
+    assert.equal((await snapshot()).boss.kind, ['onion-head','parallel-dish','tiger-shark','claw-device','king-spice'][stage]);
+    await page.screenshot({path:path.join(out,`boss-${stage+1}.png`)});
+    await page.evaluate(() => { workerBeeDebug.defeatBoss(); workerBeeDebug.step(151); });
+    assert.equal((await snapshot()).stageNumber,stage+2);
+    if(stage===4) { assert.equal((await snapshot()).stageIndex,0); assert.equal((await snapshot()).loop,2); }
   }
-  const result = await send("Page.captureScreenshot", {
-    format: "png",
-    captureBeyondViewport: fullPage,
-    fromSurface: true,
-    ...(clip ? { clip } : {}),
-  });
-  const path = `${outputDir}/${name}.png`;
-  await writeFile(path, Buffer.from(result.data, "base64"));
-  return path;
-}
+  results.push('调试fixture：五种Boss均可绘制/过关；第5关后自动Stage6/第2周目，无结局重置');
 
-async function viewport(width, height, mobile = false) {
-  await send("Emulation.setDeviceMetricsOverride", {
-    width,
-    height,
-    deviceScaleFactor: 1,
-    mobile,
-    screenWidth: width,
-    screenHeight: height,
-  });
-  await send("Emulation.setTouchEmulationEnabled", { enabled: mobile, maxTouchPoints: mobile ? 5 : 1 });
-  await send("Page.reload", { ignoreCache: true });
-  await wait(800);
-}
+  await page.evaluate(() => { workerBeeDebug.start(0,1); workerBeeDebug.manual(true); workerBeeDebug.step(420,[{fire:true}]); });
+  await page.screenshot({path:path.join(out,'desktop-game.png'),fullPage:true});
+  const mobile = await browser.newPage({ viewport:{width:375,height:844}, isMobile:true, hasTouch:true });
+  mobile.on('pageerror',error=>errors.push(error.message));
+  await mobile.goto(url); await mobile.waitForLoadState('networkidle');
+  assert.equal(await mobile.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+  await mobile.locator('#assist-mode').selectOption('invincible'); await mobile.locator('#assist-apply').click();
+  await mobile.locator('#start-button').click();
+  await mobile.locator('[data-control="fire"]').scrollIntoViewIfNeeded();
+  const fireButton = await mobile.locator('[data-control="fire"]').boundingBox();
+  const cdp=await mobile.context().newCDPSession(mobile);
+  await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:fireButton.x+fireButton.width/2,y:fireButton.y+fireButton.height/2}]});
+  await mobile.waitForFunction(() => workerBeeDebug.snapshot().playerShots > 0);
+  assert.ok(await mobile.evaluate(()=>workerBeeDebug.snapshot().playerShots>0));
+  await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+  assert.equal(await mobile.locator('[data-control="fire"]').evaluate(el=>el.classList.contains('is-pressed')),false);
+  await mobile.locator('#pause-button').click();
+  const mobilePaused=await mobile.evaluate(()=>workerBeeDebug.snapshot().stageTime);
+  await mobile.waitForTimeout(120);
+  assert.equal(await mobile.evaluate(()=>workerBeeDebug.snapshot().stageTime),mobilePaused);
+  await mobile.screenshot({path:path.join(out,'mobile-settings.png'),fullPage:true});
+  results.push('真实移动触摸：375px无横向滚动，触屏开火/松手/暂停，设置可用');
 
-await send("Runtime.enable");
-await send("Page.enable");
-await viewport(1280, 900, false);
-consoleErrors.length = 0;
-
-const desktopReady = await evaluate(`({
-  title: document.title,
-  ready: document.readyState,
-  canvas: Boolean(document.querySelector('#game-canvas')),
-  worldCanvas: Boolean(document.querySelector('#world-canvas')),
-  controls: document.querySelectorAll('button').length,
-  debug: typeof workerBeeDebug === 'object',
-  renderer: workerBeeDebug.renderInfo?.() ?? null
-})`);
-assert.equal(desktopReady.title, "工蜂 3D | 五关街机射击");
-assert.equal(desktopReady.ready, "complete");
-assert.equal(desktopReady.canvas, true);
-assert.equal(desktopReady.worldCanvas, true, "缺少独立的 WebGL 世界画布");
-assert.equal(desktopReady.controls, 15);
-assert.equal(desktopReady.debug, true);
-assert.equal(desktopReady.renderer?.kind, "webgl2", "世界渲染器不是 WebGL2");
-assert.equal(desktopReady.renderer?.depthTest, true, "WebGL 深度测试未启用");
-assert.equal(desktopReady.renderer?.perspective, true, "相机没有使用透视投影");
-const liveWebGL = await evaluate(`{
-  const gl = document.querySelector('#world-canvas').getContext('webgl2');
-  const program = gl.getParameter(gl.CURRENT_PROGRAM);
-  const matrix = Array.from(gl.getUniform(program, gl.getUniformLocation(program, 'uViewProjection')));
-  ({
-    context: gl.constructor.name,
-    depthTest: gl.isEnabled(gl.DEPTH_TEST),
-    currentProgram: Boolean(program),
-    perspectiveDivide: Math.abs(matrix[15] - 1) > 0.01,
-    viewport: Array.from(gl.getParameter(gl.VIEWPORT))
-  });
-}`);
-assert.equal(liveWebGL.context, "WebGL2RenderingContext");
-assert.equal(liveWebGL.depthTest, true);
-assert.equal(liveWebGL.currentProgram, true);
-assert.equal(liveWebGL.perspectiveDivide, true, "GPU 当前矩阵仍是正交/单位投影");
-
-const desktopReadyShot = await screenshot("desktop-ready");
-await evaluate("document.querySelector('#start-button').click()");
-await wait(100);
-const desktopStartMid = await screenshot("desktop-start-mid");
-await wait(400);
-const beforeMove = await evaluate("workerBeeDebug.snapshot()");
-await key("ArrowRight", "ArrowRight", 450);
-const afterMove = await evaluate("workerBeeDebug.snapshot()");
-assert.equal(afterMove.mode, "playing");
-assert.ok(afterMove.player.x > beforeMove.player.x, "方向键没有移动机体");
-
-await key("KeyJ", "j", 220);
-await wait(120);
-const afterFire = await evaluate("workerBeeDebug.snapshot()");
-assert.ok(afterFire.playerShots > 0, "射击键没有生成子弹");
-await wait(2200);
-const activeRenderer = await evaluate("workerBeeDebug.renderInfo()");
-assert.ok(activeRenderer.drawCalls >= 30, "WebGL 场景缺少足够的独立 3D 物体");
-assert.ok(activeRenderer.triangles >= 2000, "WebGL 场景三角形数量不足，可能退化成平面伪 3D");
-const desktopGame = await screenshot("desktop-game");
-await evaluate("document.querySelector('#game-canvas').style.visibility = 'hidden'");
-const webglWorldOnly = await screenshot("desktop-webgl-world-only");
-await evaluate(`{
-  document.querySelector('#game-canvas').style.visibility = '';
-  workerBeeDebug.start(0);
-  document.querySelector('#world-canvas').style.visibility = 'hidden';
-}`);
-await wait(100);
-const hudLayerOnly = await screenshot("desktop-hud-layer-only");
-await evaluate("document.querySelector('#world-canvas').style.visibility = ''");
-
-const stageResults = [];
-for (let stage = 0; stage < 5; stage += 1) {
-  await evaluate(`workerBeeDebug.start(${stage}); workerBeeDebug.spawnBoss()`);
-  await wait(120);
-  const boss = await evaluate("workerBeeDebug.snapshot().boss");
-  assert.ok(boss && boss.hp > 0, `第 ${stage + 1} 关 Boss 未生成`);
-  await evaluate("workerBeeDebug.defeatBoss()");
-  await wait(150);
-  const result = await evaluate(`({
-    mode: workerBeeDebug.snapshot().mode,
-    title: document.querySelector('#overlay-title').textContent,
-    button: document.querySelector('#start-button').textContent
-  })`);
-  assert.equal(result.mode, "stage-clear");
-  stageResults.push(result);
-}
-
-await evaluate("document.querySelector('#start-button').click()");
-await wait(100);
-const victory = await evaluate(`({
-  mode: workerBeeDebug.snapshot().mode,
-  title: document.querySelector('#overlay-title').textContent,
-  visible: document.querySelector('#game-overlay').classList.contains('overlay--visible')
-})`);
-assert.deepEqual(victory, { mode: "victory", title: "五关完成", visible: true });
-const desktopVictory = await screenshot("desktop-victory", true);
-
-await viewport(768, 1024, false);
-await evaluate("document.querySelector('#start-button').click()");
-await wait(2600);
-const tabletGame = await screenshot("tablet-game", true);
-
-await viewport(375, 844, true);
-const mobileLayout = await evaluate(`({
-  overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth,
-  touchVisible: getComputedStyle(document.querySelector('.touch-controls')).display !== 'none',
-  canvasWidth: Math.round(document.querySelector('#game-canvas').getBoundingClientRect().width)
-})`);
-assert.equal(mobileLayout.overflow, false, "手机页面出现横向滚动");
-assert.equal(mobileLayout.touchVisible, true, "手机触控按钮不可见");
-assert.ok(mobileLayout.canvasWidth <= 375, "画布超出手机宽度");
-
-await evaluate("document.querySelector('#start-button').click()");
-await wait(2600);
-const mobileBefore = await evaluate("workerBeeDebug.snapshot()");
-const fireButton = await evaluate(`{
-  const rect = document.querySelector('[data-control="fire"]').getBoundingClientRect();
-  ({ x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 });
-}`);
-await send("Input.dispatchTouchEvent", {
-  type: "touchStart",
-  touchPoints: [{ x: fireButton.x, y: fireButton.y, id: 7, radiusX: 2, radiusY: 2, force: 1 }],
-});
-await wait(100);
-const mobileFirePressed = await screenshot("mobile-fire-pressed", true);
-await wait(200);
-await send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
-await wait(120);
-const mobileAfter = await evaluate("workerBeeDebug.snapshot()");
-const fireButtonState = await evaluate(`{
-  const button = document.querySelector('[data-control="fire"]');
-  const style = getComputedStyle(button);
-  ({ pressed: button.classList.contains('is-pressed'), borderRadius: style.borderRadius, width: style.width });
-}`);
-assert.ok(mobileAfter.playerShots > mobileBefore.playerShots, "触屏射击按钮没有生成子弹");
-assert.equal(fireButtonState.pressed, false, "触屏射击按钮松开后仍保持按下状态");
-const mobileGame = await screenshot("mobile-game", true);
-
-assert.deepEqual(consoleErrors, []);
-socket.close();
-
-console.log(JSON.stringify({
-  desktopReady,
-  liveWebGL,
-  movement: { before: beforeMove.player, after: afterMove.player },
-  firing: afterFire.playerShots,
-  activeRenderer,
-  stages: stageResults,
-  victory,
-  mobileLayout,
-  fireButtonState,
-  screenshots: [desktopReadyShot, desktopStartMid, desktopGame, webglWorldOnly, hudLayerOnly, desktopVictory, tabletGame, mobileFirePressed, mobileGame],
-  consoleErrors,
-}, null, 2));
+  const offline=await browser.newPage();
+  offline.on('pageerror',error=>errors.push(error.message));
+  const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+  await offline.goto(pathToFileURL(path.join(root,'index.html')).href);
+  await offline.locator('#start-button').click();
+  assert.equal(await offline.evaluate(()=>workerBeeDebug.snapshot().mode),'playing');
+  results.push('file://直接打开并开局通过，无运行依赖/联网需求');
+  assert.deepEqual(errors,[]);
+  await writeFile(path.join(out,'results.json'),JSON.stringify({results,errors},null,2));
+  console.log(JSON.stringify({results,errors,out},null,2));
+} finally { await browser.close(); }

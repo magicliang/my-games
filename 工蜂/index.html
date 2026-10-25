@@ -4,8 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#101827">
-    <meta name="description" content="受《3D经典 兵蜂》启发的五关网页版纵向射击游戏，支持键盘、鼠标和触屏。">
-    <title>工蜂 3D | 五关街机射击</title>
+    <meta name="description" content="按 FC 初代《兵蜂》规则制作的网页版纵向射击游戏，支持单人、双人、键盘和触屏。">
+    <title>兵蜂 FC | 经典纵向射击</title>
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
@@ -15,8 +15,8 @@
       <section class="arcade" aria-labelledby="game-title">
         <header class="arcade__header">
           <div>
-            <p class="arcade__kicker">五关纵向射击</p>
-            <h1 id="game-title">工蜂 <span>3D</span></h1>
+            <p class="arcade__kicker">FC 初代 · 五关循环</p>
+            <h1 id="game-title">兵蜂 <span>FC</span></h1>
           </div>
           <div class="arcade__header-actions">
             <button id="sound-button" class="button button--quiet" type="button" aria-pressed="true">声音：开</button>
@@ -32,22 +32,23 @@
         </div>
 
         <div class="screen-shell" id="screen-shell">
-          <canvas id="world-canvas" width="480" height="720" aria-hidden="true"></canvas>
+          <canvas id="world-canvas" width="512" height="480" aria-hidden="true"></canvas>
           <canvas
             id="game-canvas"
-            width="480"
-            height="720"
+            width="512"
+            height="480"
             tabindex="0"
-            aria-label="工蜂 3D 游戏画面。使用方向键或 WASD 移动，空格或 J 射击，K 投弹，P 暂停。"
+            aria-label="兵蜂 FC 游戏画面。单人使用方向键或 WASD 移动，默认空格射击、F 投弹，P 暂停。可在画面下方调整按键和血量。"
           ></canvas>
 
           <div class="overlay overlay--visible" id="game-overlay" role="dialog" aria-modal="false" aria-labelledby="overlay-title">
             <div class="overlay__panel">
               <p id="overlay-kicker" class="overlay__kicker">多布里岛告急</p>
-              <h2 id="overlay-title">五关，一次起飞</h2>
-              <p id="overlay-copy">射击云朵，追打铃铛改变颜色。用炸弹清除地面炮台，击败五名守关 Boss。</p>
+              <h2 id="overlay-title">先射云，再追铃</h2>
+              <p id="overlay-copy">对空射击追打铃铛，对地投弹寻找道具。特殊色只留一发，认准颜色再接住。</p>
               <div class="overlay__actions">
-                <button id="start-button" class="button button--primary" type="button">开始游戏</button>
+                <button id="start-button" class="button button--primary" type="button">单人开始</button>
+                <button id="two-player-button" class="button button--secondary" type="button">双人开始</button>
                 <button id="stage-select-button" class="button button--secondary" type="button">选择关卡</button>
               </div>
               <div id="stage-picker" class="stage-picker" hidden aria-label="关卡选择"></div>
@@ -66,12 +67,41 @@
             <button class="touch-button dpad__down" type="button" data-control="down" aria-label="向下">↓</button>
           </div>
           <div class="action-pad">
-            <button class="touch-button touch-button--bomb" type="button" data-control="bomb"><span>B</span>炸弹</button>
-            <button class="touch-button touch-button--fire" type="button" data-control="fire"><span>A</span>射击</button>
+            <button class="touch-button touch-button--bomb" type="button" data-control="bomb"><span aria-hidden="true">◉</span>投弹</button>
+            <button class="touch-button touch-button--fire" type="button" data-control="fire"><span aria-hidden="true">↑</span>射击</button>
           </div>
         </div>
 
-        <p class="keyboard-hint"><kbd>WASD</kbd> / 方向键移动　<kbd>J</kbd> / 空格射击　<kbd>K</kbd> 投弹　<kbd>P</kbd> 暂停</p>
+        <section class="game-settings" aria-labelledby="settings-title">
+          <div class="game-settings__heading">
+            <h2 id="settings-title">血量与按键</h2>
+            <p id="assist-status" class="assist-status" role="status" aria-live="polite">经典</p>
+          </div>
+          <div class="game-settings__row">
+            <div class="settings-field">
+              <label for="assist-mode">受伤模式</label>
+              <select id="assist-mode">
+                <option value="classic">经典</option>
+                <option value="armor">高血量</option>
+                <option value="invincible">无敌</option>
+              </select>
+            </div>
+            <div class="settings-field settings-field--health">
+              <label for="armor-health">每架血量</label>
+              <input id="armor-health" type="number" min="2" max="99" step="1" value="10" inputmode="numeric" aria-describedby="assist-help">
+            </div>
+            <button id="assist-apply" class="button button--quiet" type="button">应用模式</button>
+          </div>
+          <p id="assist-help" class="game-settings__help">高血量可设为 2–99；无敌模式不受伤。开局前和游戏中都可应用。</p>
+          <div class="game-settings__bindings" aria-label="1P 攻击按键">
+            <button id="fire-binding" class="button button--quiet" type="button" aria-describedby="binding-help">射击：空格</button>
+            <button id="bomb-binding" class="button button--quiet" type="button" aria-describedby="binding-help">投弹：F</button>
+            <button id="reset-bindings" class="button button--quiet" type="button">恢复默认</button>
+          </div>
+          <p id="binding-help" class="game-settings__help">点击射击或投弹按钮后按新键，Esc 取消。移动、暂停与 2P 按键不能用于改键。</p>
+        </section>
+
+        <p class="keyboard-hint">1P <kbd>WASD</kbd> 移动 · <kbd id="fire-key-label">Space</kbd> 射击 · <kbd id="bomb-key-label">F</kbd> 投弹 · <kbd>P</kbd> 暂停<br>单人也可用方向键移动。2P 方向键移动 · <kbd>,</kbd> 射击 · <kbd>.</kbd> 投弹</p>
         <p id="live-status" class="sr-only" aria-live="polite">游戏准备完成</p>
       </section>
 
@@ -79,21 +109,37 @@
         <header>
           <p class="manual__kicker">说明书</p>
           <h2 id="manual-title">先射云，再追铃</h2>
-          <p>黄色铃铛加分。继续射中它会依次变成蓝、白、绿、红，分别强化速度、<span class="no-break">双炮</span>、分身和<span class="no-break">护盾</span>。</p>
+          <p>蓝铃加速，白铃双炮，红白闪烁铃产生分身，红铃提供护盾。特殊色再中一发就回黄，持续追打会错过需要的强化。</p>
         </header>
 
         <section>
           <h3>两种攻击</h3>
           <dl class="manual__controls">
-            <div><dt>空中射击</dt><dd>击落敌机、云朵与铃铛。</dd></div>
-            <div><dt>地面炸弹</dt><dd>炸掉炮台，获得水果、<span class="no-break">散射或清屏星。</span></dd></div>
+            <div><dt>空中射击</dt><dd>击落敌机，从云中打出铃铛；射中铃铛把它顶起。</dd></div>
+            <div><dt>地面炸弹</dt><dd>对准地面目标投弹，获得水果、三向弹糖果或清屏星。</dd></div>
           </dl>
         </section>
 
         <section>
           <h3>机体受损</h3>
-          <p>子弹擦中左右侧会打掉一只手臂。两臂都丢失后不能投弹，救护机会出现一次。<span class="no-break">接住即可修复。</span></p>
+          <p>经典模式下，没有护盾时，第一次中弹失去双臂、无法投弹，再中弹损失一架；撞上敌机直接损失一架。每架机体仅有一次救护车，接住可修复双臂。</p>
         </section>
+
+        <section>
+          <h3>铃铛与装备</h3>
+          <p>黄铃连续得分为 500 → 1,000 → 5,000 → 10,000；漏掉铃铛会重置连分。红白分身与红色护盾不能同时使用。分身会跟随你的移动轨迹；分身和三向弹糖果只在单人模式生效。</p>
+        </section>
+
+        <details>
+          <summary>双人操作与合体</summary>
+          <p>1P 使用 WASD 移动，默认空格射击、F 投弹，可在“血量与按键”中修改。2P 使用方向键移动、逗号射击、句号投弹。两机纵向接触可发动 Star 攻击，横向并排可发动 Fire 攻击。</p>
+          <p>单人也可用方向键移动。射击和投弹是两个独立动作；画面下方的同名按钮可直接触控。</p>
+        </details>
+
+        <details>
+          <summary>计分与奖励生命</summary>
+          <p>空敌 100 分、地敌 500 分、Boss 10,000 分。初始 3 架，50,000 分首次奖命，此后每增加 150,000 分奖命，奖励范围截至 1,000,000 分。</p>
+        </details>
 
         <details>
           <summary>五关和 Boss</summary>
@@ -108,7 +154,7 @@
 
         <details>
           <summary>打不开或没有声音</summary>
-          <p>可直接双击 <code>index.html</code>。需要支持 WebGL2；浏览器只允许在第一次点击后播放声音，所以先点“开始游戏”。</p>
+          <p>可直接双击 <code>index.html</code>。浏览器只允许在第一次点击后播放声音，所以先点“单人开始”或“双人开始”。</p>
         </details>
 
         <p class="manual__note">本作使用原创程序绘制和合成音效，未使用原版素材。</p>
@@ -116,7 +162,8 @@
     </main>
 
     <script src="game-core.js"></script>
-    <script src="webgl-renderer.js"></script>
+    <script src="fc-renderer.js"></script>
+    <script src="game-engine.js"></script>
     <script src="game.js"></script>
   </body>
 </html>

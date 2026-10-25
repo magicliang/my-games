@@ -5,9 +5,26 @@
 })(typeof globalThis !== "undefined" ? globalThis : this, function buildGameCore() {
   "use strict";
 
-  const WIDTH = 480;
-  const HEIGHT = 720;
-  const BELL_COLORS = ["yellow", "blue", "white", "green", "red"];
+  const WIDTH = 512;
+  const HEIGHT = 480;
+  const BELL_COLORS = ["yellow", "blue", "white", "flashing", "red"];
+
+  // FC manual: https://www.nintendo.co.jp/data/software/manual/WUP-N-FAUJ-JPN.pdf
+  // Bell counts: https://hutokoro.jp/games/fc-99/ (play observations, not ROM timing).
+  // Shield durability, speed cap and motion timings still need frame-by-frame calibration.
+  const FC_RULES = Object.freeze({
+    bellColorsAt: Object.freeze({ 4: "blue", 9: "white", 14: "flashing", 19: "red" }),
+    bellBeeHits: 31,
+    yellowBellScores: Object.freeze([500, 1000, 5000, 10000]),
+    initialLives: 3,
+    firstExtraLife: 50000,
+    extraLifeInterval: 150000,
+    extraLifeLimit: 1000000,
+    maxSpeedLevel: 5,
+    shieldHits: 16,
+    scores: Object.freeze({ air: 100, ground: 500, boss: 10000, bee: 15100 }),
+    cloneDelay: 12,
+  });
 
   const wave = (at, kind, count, formation, extra = {}) => ({
     at,
@@ -126,20 +143,32 @@
     return dx * dx + dy * dy <= r * r;
   }
 
-  function bellColorForHits(hits) {
-    return BELL_COLORS[clamp(Math.floor(hits / 5), 0, BELL_COLORS.length - 1)];
+  function bellColorForHits(hits, player, playerCount = 1) {
+    const color = FC_RULES.bellColorsAt[Math.floor(hits)] || "yellow";
+    if (color === "white" && (player?.twinShot || player?.threeWay)) return "yellow";
+    if (color === "flashing" && (playerCount > 1 || player?.shield > 0)) return "yellow";
+    if (color === "red" && player?.mirrors) return "yellow";
+    return color;
   }
 
-  function createPlayer() {
+  function createPlayer(id = 0) {
     return {
+      id,
       x: WIDTH / 2,
-      y: HEIGHT - 112,
-      radius: 18,
-      lives: 3,
+      y: HEIGHT - 64,
+      radius: 12,
+      active: true,
+      lives: FC_RULES.initialLives,
+      score: 0,
+      nextExtraLife: FC_RULES.firstExtraLife,
+      bellChain: 0,
       speedLevel: 0,
       twinShot: false,
+      threeWay: false,
       mirrors: false,
       shield: 0,
+      history: [],
+      clonePositions: [],
       arms: { left: true, right: true },
       ambulanceUsed: false,
       invulnerable: 0,
@@ -148,36 +177,148 @@
     };
   }
 
-  function applyBell(player, color) {
+  function applyBell(player, color, playerCount = 1) {
+    if (color === "yellow" || !BELL_COLORS.includes(color)
+      || (color === "flashing" && (playerCount > 1 || player.shield > 0))
+      || (color === "red" && player.mirrors)) {
+      return { kind: "yellow", color: "yellow", applied: false };
+    }
     switch (color) {
       case "blue":
-        player.speedLevel = clamp(player.speedLevel + 1, 0, 5);
+        player.speedLevel = clamp(player.speedLevel + 1, 0, FC_RULES.maxSpeedLevel);
         break;
       case "white":
         player.twinShot = true;
+        player.threeWay = false;
         break;
-      case "green":
+      case "flashing":
         player.mirrors = true;
-        player.shield = 0;
+        player.threeWay = false;
+        updateClones(player);
         break;
       case "red":
-        player.shield = 4;
-        player.mirrors = false;
+        player.shield = FC_RULES.shieldHits;
         break;
       default:
         break;
     }
+    return { kind: "power", color, applied: true };
+  }
+
+  function applyCandy(player, playerCount = 1) {
+    if (playerCount > 1 || player.mirrors) return false;
+    player.threeWay = true;
+    player.twinShot = false;
+    return true;
+  }
+
+  function hitBell(state, bell, player = state.player) {
+    state.bellHits = (state.bellHits || 0) + 1;
+    bell.hits = state.bellHits;
+    bell.color = bellColorForHits(state.bellHits, player, state.playerCount);
+    if (state.bellHits >= FC_RULES.bellBeeHits) {
+      bell.dead = true;
+      state.bellHits = 0;
+      return "bee";
+    }
+    return "bell";
+  }
+
+  function addScore(state, player, points) {
+    if (!Number.isFinite(points) || points < 0) throw new RangeError("points must be nonnegative and finite");
+    player.score += points;
+    state.score += points;
+    let extraLives = 0;
+    while (player.score >= player.nextExtraLife && player.nextExtraLife <= FC_RULES.extraLifeLimit) {
+      player.lives += 1;
+      extraLives += 1;
+      player.nextExtraLife += FC_RULES.extraLifeInterval;
+      if (player.nextExtraLife > FC_RULES.extraLifeLimit) player.nextExtraLife = Infinity;
+    }
+    state.nextExtraLife = state.player.nextExtraLife;
+    return extraLives;
+  }
+
+  function collectYellowBell(state, player = state.player) {
+    const points = FC_RULES.yellowBellScores[Math.min(player.bellChain, FC_RULES.yellowBellScores.length - 1)];
+    player.bellChain += 1;
+    state.bellChain = state.player.bellChain;
+    state.bellHits = 0;
+    addScore(state, player, points);
+    return points;
+  }
+
+  function missBell(state) {
+    state.bellHits = 0;
+    state.bellChain = 0;
+    state.players.forEach((player) => { player.bellChain = 0; });
+  }
+
+  function damagePlayer(player, { collision = false } = {}) {
+    if (!player.active || player.invulnerable > 0) return "ignored";
+    if (player.shield > 0) {
+      player.shield = Math.max(0, player.shield - (collision ? 2 : 1));
+      player.invulnerable = 0.12;
+      return "shield";
+    }
+    if (!collision && (player.arms.left || player.arms.right)) {
+      player.arms.left = false;
+      player.arms.right = false;
+      player.invulnerable = 0.75;
+      return "arms";
+    }
+    return "life";
+  }
+
+  function restorePlayerAfterDeath(player) {
+    const replacement = createPlayer(player.id);
+    replacement.x = player.x;
+    replacement.y = player.y;
+    replacement.score = player.score;
+    replacement.nextExtraLife = player.nextExtraLife;
+    replacement.lives = Math.max(0, player.lives - 1);
+    replacement.active = replacement.lives > 0;
+    replacement.invulnerable = 2;
+    Object.assign(player, replacement);
     return player;
   }
 
-  function createGameState(stageIndex = 0) {
+  function updateClones(player) {
+    player.history.push({ x: player.x, y: player.y });
+    const limit = FC_RULES.cloneDelay * 2 + 1;
+    if (player.history.length > limit) player.history.splice(0, player.history.length - limit);
+    player.clonePositions = player.mirrors ? [1, 2].map((index) => {
+      const position = player.history[Math.max(0, player.history.length - 1 - index * FC_RULES.cloneDelay)];
+      return { x: position.x, y: position.y, radius: player.radius };
+    }) : [];
+    return player.clonePositions;
+  }
+
+  function nextStage(stageIndex, loop = 1) {
+    return stageIndex >= LEVELS.length - 1
+      ? { stageIndex: 0, loop: loop + 1 }
+      : { stageIndex: stageIndex + 1, loop };
+  }
+
+  function createGameState(stageIndex = 0, playerCount = 1) {
+    playerCount = playerCount === 2 ? 2 : 1;
+    const players = Array.from({ length: playerCount }, (_, id) => createPlayer(id));
+    if (playerCount === 2) {
+      players[0].x -= 48;
+      players[1].x += 48;
+    }
     return {
       mode: "ready",
       stageIndex: clamp(stageIndex, 0, LEVELS.length - 1),
+      loop: 1,
       stageTime: 0,
       score: 0,
-      nextExtraLife: 30000,
-      player: createPlayer(),
+      nextExtraLife: FC_RULES.firstExtraLife,
+      playerCount,
+      player: players[0],
+      players,
+      bellHits: 0,
+      bellChain: 0,
       spawnedWaves: new Set(),
       bossSpawned: false,
       enemies: [],
@@ -193,13 +334,14 @@
   }
 
   function stageIsComplete(state) {
-    return state.bossSpawned && state.enemies.length === 0;
+    return state.bossSpawned && !state.enemies.some((enemy) => !enemy.dead);
   }
 
   function powerLabel(player) {
     const powers = [];
-    if (player.twinShot) powers.push("双炮");
-    if (player.mirrors) powers.push("分身");
+    if (player.threeWay) powers.push("三向弹");
+    else if (player.twinShot) powers.push("双炮");
+    if (player.mirrors) powers.push("分身×2");
     if (player.shield) powers.push(`护盾 ${player.shield}`);
     if (player.speedLevel) powers.push(`速度 ${player.speedLevel}`);
     return powers.length ? powers.join(" / ") : "标准装备";
@@ -209,12 +351,22 @@
     WIDTH,
     HEIGHT,
     BELL_COLORS,
+    FC_RULES,
     LEVELS,
     clamp,
     circleHit,
     bellColorForHits,
     createPlayer,
     applyBell,
+    applyCandy,
+    hitBell,
+    addScore,
+    collectYellowBell,
+    missBell,
+    damagePlayer,
+    restorePlayerAfterDeath,
+    updateClones,
+    nextStage,
     createGameState,
     stageIsComplete,
     powerLabel,
