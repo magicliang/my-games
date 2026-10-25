@@ -1,0 +1,20 @@
+# Dependencies and generated output (also covered by the repository ignore file).
+node_modules/
+dist/
+build/
+coverage/
+
+# Local tooling, temporary files, and private configuration.
+.cache/
+.parcel-cache/
+.vite/
+.omo/
+.omx/
+tmp/
+temp/
+*.log
+*.tsbuildinfo
+.DS_Store
+.env
+.env.*
+!.env.example

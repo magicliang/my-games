@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0d1918">
+  <meta name="description" content="曼哈顿计划：原创新像素画，八关双人清版动作游戏。">
+  <title>忍者神龟 · 曼哈顿计划</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230d1918'/%3E%3Cpath d='M12 20h40v30H12z' fill='%23a5dc6a'/%3E%3Cpath d='M8 24h48v12H8z' fill='%234eaaf2'/%3E%3Cpath d='M20 27h6v5h-6zm18 0h6v5h-6z' fill='white'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="site-shell">
+    <header class="masthead">
+      <a class="wordmark" href="./" aria-label="曼哈顿计划首页"><span class="shell-mark">亀</span> HALF SHELL <span class="wordmark-sub">游戏实验室</span></a>
+      <div class="header-actions"><span class="status-light"></span><span class="local-label">LOCAL CO-OP</span><button id="sound-button" class="icon-button" type="button" aria-pressed="false">声音 关</button><button id="settings-button" class="icon-button" type="button">改键 / 设置</button></div>
+    </header>
+    <main>
+      <section class="title-row">
+        <div><p class="eyebrow">1987 HEROES. ONE MORE NIGHT.</p><h1>曼哈顿计划<span class="title-stroke">III</span></h1><p class="subtitle">TEENAGE MUTANT NINJA TURTLES <span>·</span> THE MANHATTAN PROJECT</p></div>
+        <div class="edition-tag"><span>8 STAGES</span><strong>四只神龟，一起出击。</strong><small>NES 美版玩法重建 / 原创 2D 画面</small></div>
+      </section>
+      <div class="play-layout">
+        <section class="arcade" aria-label="游戏区域">
+          <div class="cabinet-top"><span><i></i> <b id="scene-label">01 / 佛罗里达海滩</b></span><span id="mode-label">经典模式 · 无敌关闭</span></div>
+          <div class="screen-wrap">
+            <canvas id="game" width="960" height="540" tabindex="0" aria-label="忍者神龟游戏画面，按 Enter 开始，Escape 暂停。操作见下方。"></canvas>
+            <div id="screen-overlay" class="screen-overlay"><div class="overlay-card"><p id="overlay-kicker">纽约需要你</p><h2 id="overlay-title">假期结束。<br>英雄归来。</h2><p id="overlay-text">选择你的神龟，夺回曼哈顿。</p><button id="overlay-action" type="button" class="primary-button">开始行动 <span>↗</span></button><small id="overlay-footnote">ENTER 开始 / 支持双人同屏</small></div></div>
+          </div>
+          <div id="touch-controls" class="touch-controls" aria-label="触屏控制">
+            <div class="touch-player"><label for="touch-player">控制</label><select id="touch-player"><option value="0">玩家 1</option><option value="1">玩家 2</option></select></div>
+            <div class="dpad" aria-label="移动方向">
+              <button data-touch="up,left" aria-label="左上">↖</button><button data-touch="up" aria-label="上">↑</button><button data-touch="up,right" aria-label="右上">↗</button>
+              <button data-touch="left" aria-label="左">←</button><span>＋</span><button data-touch="right" aria-label="右">→</button>
+              <button data-touch="down,left" aria-label="左下">↙</button><button data-touch="down" aria-label="下">↓</button><button data-touch="down,right" aria-label="右下">↘</button>
+            </div>
+            <div class="touch-actions"><button data-touch="attack" class="touch-attack">攻击</button><button data-touch="jump" class="touch-jump">跳跃</button><button data-touch="special" class="touch-special">必杀<small>−1 能量</small></button></div>
+          </div>
+          <div class="cabinet-bottom"><span id="game-message">向右前进 · 先清除当前敌人</span><div><button id="join-button" type="button">2P 加入</button><button id="pause-button" type="button">暂停 <kbd>ESC</kbd></button><button id="fullscreen-button" type="button" aria-label="切换游戏全屏">⛶</button></div></div>
+        </section>
+        <aside class="setup-panel">
+          <div class="panel-heading"><span class="eyebrow">CHOOSE YOUR TURTLE</span><span id="setup-status" class="mini-tag">READY</span></div>
+          <div class="player-tabs" role="group" aria-label="选择要配置的玩家"><button class="active" data-player-tab="0" type="button">玩家 1</button><button data-player-tab="1" type="button">玩家 2</button></div>
+          <div id="character-grid" class="character-grid"></div>
+          <p id="character-detail" class="character-detail"></p>
+          <div class="configuration"><label for="players-mode">出击方式</label><select id="players-mode"><option value="solo">单人行动</option><option value="coop">双人 B · 无友伤</option><option value="friendly">双人 A · 有友伤</option></select><label for="difficulty">游戏模式</label><select id="difficulty"><option value="classic">经典 · 标准能量</option><option value="high">高血量 · 四倍能量</option><option value="invincible">无敌 · 练习路线</option></select></div>
+          <button id="start-button" type="button" class="primary-button">开始行动 <span>↗</span></button>
+          <p id="setup-note" class="fine-print">默认经典，无敌关闭。中途更换设置在新一局生效。</p>
+        </aside>
+      </div>
+      <section class="below-game">
+        <div class="controls-summary"><p class="eyebrow">KNOW YOUR MOVES</p><h2>配合，比蛮干更有效。</h2><div id="key-summary"></div><p class="move-hint">↓ + 攻击：挑投敌人 <span>·</span> 空中攻击：飞踢 <span>·</span> 必杀消耗 1 格能量，最后 1 格不扣</p></div>
+        <div class="mission"><p class="eyebrow">THE MISSION</p><p>施莱德把曼哈顿升上天空。<br>从海滩出发，一路打进克朗的飞船。</p><button id="route-button" class="text-button" type="button">查看八关路线 <span>→</span></button></div>
+      </section>
+      <nav id="stage-route" class="stage-route" aria-label="八关路线"></nav>
+    </main>
+    <footer><span>独立玩法重建 · 全部图像和音效由原创代码生成</span><span><a href="docs/RULES.md" target="_blank" rel="noreferrer">规则依据与差距 ↗</a> <span class="footer-dot">/</span> <a href="README.md" target="_blank" rel="noreferrer">操作说明 ↗</a></span></footer>
+  </div>
+  <dialog id="settings-dialog"><div class="dialog-heading"><div><p class="eyebrow">MAKE IT YOURS</p><h2>键盘与显示</h2></div><button id="close-settings" class="icon-button" type="button" aria-label="关闭设置">✕</button></div><p>点击按键，再按新的键。两位玩家的所有动作都不能重键。Esc 保留给暂停，Enter 保留给开始。</p><div id="binding-grid"></div><p id="binding-message" role="status" class="binding-message">普通 Mac 键盘即可，无需小键盘。</p><label class="check-label"><input id="touch-visible" type="checkbox">始终显示触屏按键</label><label class="check-label"><input id="hitbox-visible" type="checkbox">显示地面 / 攻击判定（辅助观察）</label><div class="dialog-actions"><button id="reset-bindings" class="secondary-button" type="button">恢复默认按键</button><button id="save-settings" class="primary-button" type="button">完成</button></div></dialog>
+  <div id="toast" class="toast" role="status" hidden></div>
+  <script type="module" src="src/app.js"></script>
+</body>
+</html>

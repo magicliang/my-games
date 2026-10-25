@@ -1,0 +1,32 @@
+{
+  "capturedAt": "2026-10-25T14:30:33.051867+00:00",
+  "scope": "Local implementation checks; not original-game fidelity",
+  "nodeTests": {
+    "pass": 41,
+    "fail": 0
+  },
+  "browserCases": {
+    "1280x844": 12,
+    "390x844": 12
+  },
+  "files": {
+    "src/renderer.js": "47b5d4d09b4a0627df3c76ae4d4778e3c6b6fdae4ab03931ec1de6f68cb63ffd",
+    "src/core.js": "462ac45f9b7d1f2d48feb82fcfff9645099f96918ae2ed42ae60e5efb7fd9a48",
+    "src/actors.js": "d045cb683b87afb8bf0c2387f498575df64c05f26275382a9431a85ac2c7e7a5",
+    "src/content.js": "e8666722b231e214bc93bff425445321446b900b2437ccb96fab822b8cda0a7d",
+    "src/app.js": "b937ce48057e7193872029efd2319e5a4c5b736944138969296395d9411f609f",
+    "src/input.js": "8bd58d01e8cb16d3413fa4f726bc16e2dceedb4ba2c91d24b94606779f7fb1c3",
+    "tests/browser.html": "e19d8899ab5034b70191e15099826526605a9cff2499c3872a7215fe52e73861",
+    "tests/art.html": "4784afd1f77e86e24eab937626231945e8b920f690e332fe616dc3685c99a533",
+    "tests/input.test.js": "1f234d6f0144cd9c3703c39b1ae875b4eef6df50aec3ab99f2df984153b5a9ed",
+    "tests/browser.js": "d141a57781537071c90ecaac7a9276e5943bb10a4f8c8abc642b202f9d0f366c",
+    "tests/art.js": "74c94c4ad30158fed8967b17f7658ece3ecab0c5870d78ff36a8599932e3f4d5",
+    "tests/core.test.js": "8e9b3e48fe965702f743dfe3c744b6eb87de221922b0596f6871e5e7d7d40422",
+    "scripts/check.mjs": "f2680765f3f89953978e68dfb48aeea7ad5a203fd90e7e551a8b0b9baed71bfa",
+    "scripts/verify-classic.mjs": "2e6bf97e4b24d6f7ceea7d7530a6290c5236d5854e82986a3e5dff27d4388271",
+    "index.html": "8c35aba3aa1118cc688c5cb4ac5e131f1e0deac341a8bd9d7c264ea6a008170f",
+    "styles.css": "6708e5400ad6773b34f0598b1f1054c75d51109a48f89548f01c4ebb2ed0d2a1",
+    "package.json": "37cccfe1c74d356a9e3b7f229dd02ba5a5ac2f1b12e4ff0d8c015930b95421ed",
+    "server.mjs": "2e1cbc823c855fa83a45f3c0c447a781012e11f023ce9908db2924d943a2d419"
+  }
+}

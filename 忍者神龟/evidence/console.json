@@ -1,0 +1,15 @@
+{
+  "capturedAt": "2026-10-25T14:29:59.876Z",
+  "game": {
+    "url": "http://127.0.0.1:4175/",
+    "logs": []
+  },
+  "integration": {
+    "url": "http://127.0.0.1:4175/tests/browser.html?width=1280",
+    "logs": []
+  },
+  "art": {
+    "url": "http://127.0.0.1:4175/tests/art.html",
+    "logs": []
+  }
+}

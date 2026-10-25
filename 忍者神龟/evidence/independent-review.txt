@@ -1,0 +1,32 @@
+borrow unique [
+  { character: 'raph', hp: 8, lives: 1 },
+  { character: 'leo', hp: 8, lives: 2 }
+]
+Krang independent parts {
+  before: [ { x: 685, y: 380, z: 75 }, { x: 615, y: 380, z: 0 } ],
+  after: [
+    { x: 807.9444266909691, y: 380, z: 62.56430546435153 },
+    { x: 435.0000000000021, y: 380, z: 0 }
+  ],
+  phase: 3,
+  electrified: 'electricBody',
+  groundAttackDamagedSharedHp: 3
+}
+Tokka grab/flight/sign {
+  sawGrab: true,
+  sawFlight: true,
+  hp: 4,
+  x: 616.8976729582796,
+  y: 392.5,
+  electricProjectiles: 0
+}
+auto segment {
+  stage: 2,
+  before: { camera: 0, x: 155 },
+  after: { camera: 209.99999999999963, x: 365.0000000000009, auto: true }
+}
+auto segment {
+  stage: 7,
+  before: { camera: 0, x: 155 },
+  after: { camera: 159.9999999999997, x: 315.00000000000045, auto: true }
+}

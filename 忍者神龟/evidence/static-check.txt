@@ -1,0 +1,5 @@
+
+> manhattan-project-reconstruction@0.1.0 check
+> node scripts/check.mjs
+
+PASS: 13 JavaScript files parsed; relative imports resolved; core independent of DOM. No external dependencies.

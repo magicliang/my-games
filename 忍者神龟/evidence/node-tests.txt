@@ -1,0 +1,260 @@
+
+> manhattan-project-reconstruction@0.1.0 test
+> node --test tests/*.test.js
+
+TAP version 13
+# Subtest: fixed dimensions, source-attributed character data and full stage/Boss order
+ok 1 - fixed dimensions, source-attributed character data and full stage/Boss order
+  ---
+  duration_ms: 3.129875
+  type: 'test'
+  ...
+# Subtest: ground lane and height are separate; overlapping pixels do not cause a hit
+ok 2 - ground lane and height are separate; overlapping pixels do not cause a hit
+  ---
+  duration_ms: 0.156584
+  type: 'test'
+  ...
+# Subtest: normal attack causes damage at its active frame; holding does not invent auto-combos
+ok 3 - normal attack causes damage at its active frame; holding does not invent auto-combos
+  ---
+  duration_ms: 2.183792
+  type: 'test'
+  ...
+# Subtest: Don reaches a target that Raph cannot; movement does not silently change weapon range
+ok 4 - Don reaches a target that Raph cannot; movement does not silently change weapon range
+  ---
+  duration_ms: 0.302041
+  type: 'test'
+  ...
+# Subtest: airborne kick uses ground lane plus vertical hit interval
+ok 5 - airborne kick uses ground lane plus vertical hit interval
+  ---
+  duration_ms: 0.322333
+  type: 'test'
+  ...
+# Subtest: four special attacks have distinct motion and damage, cost one unit but cannot self-kill
+ok 6 - four special attacks have distinct motion and damage, cost one unit but cannot self-kill
+  ---
+  duration_ms: 1.601875
+  type: 'test'
+  ...
+# Subtest: simultaneous attack+jump activates special, without also jumping or normal attacking
+ok 7 - simultaneous attack+jump activates special, without also jumping or normal attacking
+  ---
+  duration_ms: 0.298833
+  type: 'test'
+  ...
+# Subtest: down+attack tosses a regular enemy backwards and the thrown body can hit another enemy
+ok 8 - down+attack tosses a regular enemy backwards and the thrown body can hit another enemy
+  ---
+  duration_ms: 0.382292
+  type: 'test'
+  ...
+# Subtest: damage applies stun/knockback/iframes; repeated contact cannot drain every frame
+ok 9 - damage applies stun/knockback/iframes; repeated contact cannot drain every frame
+  ---
+  duration_ms: 0.633708
+  type: 'test'
+  ...
+# Subtest: freeze expires naturally and permits attacking and jumping again
+ok 10 - freeze expires naturally and permits attacking and jumping again
+  ---
+  duration_ms: 1.4035
+  type: 'test'
+  ...
+# Subtest: alternating buttons accelerate thaw without leaving a frozen action behind
+ok 11 - alternating buttons accelerate thaw without leaving a frozen action behind
+  ---
+  duration_ms: 0.297375
+  type: 'test'
+  ...
+# Subtest: temporary turtle transformation expires, lands airborne bodies and restores attacks
+ok 12 - temporary turtle transformation expires, lands airborne bodies and restores attacks
+  ---
+  duration_ms: 0.428
+  type: 'test'
+  ...
+# Subtest: death consumes one life, permits a different turtle and respawns with invulnerability
+ok 13 - death consumes one life, permits a different turtle and respawns with invulnerability
+  ---
+  duration_ms: 0.313417
+  type: 'test'
+  ...
+# Subtest: two players cannot share a turtle; friendly fire follows selected A/B behavior
+ok 14 - two players cannot share a turtle; friendly fire follows selected A/B behavior
+  ---
+  duration_ms: 0.157125
+  type: 'test'
+  ...
+# Subtest: midgame join and borrowing a spare life preserve total lives
+ok 15 - midgame join and borrowing a spare life preserve total lives
+  ---
+  duration_ms: 0.350084
+  type: 'test'
+  ...
+# Subtest: borrowing a life revalidates turtle uniqueness after the partner changed characters
+ok 16 - borrowing a life revalidates turtle uniqueness after the partner changed characters
+  ---
+  duration_ms: 0.574041
+  type: 'test'
+  ...
+# Subtest: partner attacks break a grab; button mashing is also a working escape
+ok 17 - partner attacks break a grab; button mashing is also a working escape
+  ---
+  duration_ms: 0.218667
+  type: 'test'
+  ...
+# Subtest: pizza heals, props can break, score rewards are not dependent on render frames
+ok 18 - pizza heals, props can break, score rewards are not dependent on render frames
+  ---
+  duration_ms: 0.173083
+  type: 'test'
+  ...
+# Subtest: pause freezes all simulation state and clears an attack buffer
+ok 19 - pause freezes all simulation state and clears an attack buffer
+  ---
+  duration_ms: 0.1395
+  type: 'test'
+  ...
+# Subtest: classic is default; high health and invincibility must be explicit
+ok 20 - classic is default; high health and invincibility must be explicit
+  ---
+  duration_ms: 0.064208
+  type: 'test'
+  ...
+# Subtest: pit respects jump height; laser hazards have a readable inactive interval
+ok 21 - pit respects jump height; laser hazards have a readable inactive interval
+  ---
+  duration_ms: 0.089875
+  type: 'test'
+  ...
+# Subtest: continue restarts the current stage, preserves score and is limited to three
+ok 22 - continue restarts the current stage, preserves score and is limited to three
+  ---
+  duration_ms: 0.08225
+  type: 'test'
+  ...
+# Subtest: stage-clear bonus equals the remaining displayed time, without an invented multiplier
+ok 23 - stage-clear bonus equals the remaining displayed time, without an invented multiplier
+  ---
+  duration_ms: 0.045167
+  type: 'test'
+  ...
+# Subtest: all Bosses run distinct patterns; progression thresholds and summons are live rules
+ok 24 - all Bosses run distinct patterns; progression thresholds and summons are live rules
+  ---
+  duration_ms: 28.836667
+  type: 'test'
+  ...
+# Subtest: Rocksteady jump-fire keeps its ground position, fires from its current height and lands
+ok 25 - Rocksteady jump-fire keeps its ground position, fires from its current height and lands
+  ---
+  duration_ms: 0.556584
+  type: 'test'
+  ...
+# Subtest: Rocksteady can be jump-kicked during jump-fire and attacked normally while descending
+ok 26 - Rocksteady can be jump-kicked during jump-fire and attacked normally while descending
+  ---
+  duration_ms: 0.37925
+  type: 'test'
+  ...
+# Subtest: Tokka blocks a jump kick while guarding but can take a grounded attack
+ok 27 - Tokka blocks a jump kick while guarding but can take a grounded attack
+  ---
+  duration_ms: 0.075125
+  type: 'test'
+  ...
+# Subtest: Krang splits into independently moving and hittable parts with shared HP and a single reward
+ok 28 - Krang splits into independently moving and hittable parts with shared HP and a single reward
+  ---
+  duration_ms: 0.379833
+  type: 'test'
+  ...
+# Subtest: Krang parts share Boss throw/pit immunity, rather than becoming throwable minions
+ok 29 - Krang parts share Boss throw/pit immunity, rather than becoming throwable minions
+  ---
+  duration_ms: 0.204958
+  type: 'test'
+  ...
+# Subtest: Tokka grabs and throws the player into a fixed neon sign; landing causes electric damage
+ok 30 - Tokka grabs and throws the player into a fixed neon sign; landing causes electric damage
+  ---
+  duration_ms: 0.228541
+  type: 'test'
+  ...
+# Subtest: surf and lift progress automatically between waves while retaining screen-relative movement
+ok 31 - surf and lift progress automatically between waves while retaining screen-relative movement
+  ---
+  duration_ms: 0.81075
+  type: 'test'
+  ...
+# Subtest: seed and identical input produce the same simulation without a renderer
+ok 32 - seed and identical input produce the same simulation without a renderer
+  ---
+  duration_ms: 6.415834
+  type: 'test'
+  ...
+# Subtest: all four turtles clear the first stage in classic mode through real damage, death and respawn inputs
+ok 33 - all four turtles clear the first stage in classic mode through real damage, death and respawn inputs
+  ---
+  duration_ms: 57.396625
+  type: 'test'
+  ...
+# Subtest: actual input-driven combat traverses all eight stages and defeats all thirteen Boss encounters
+ok 34 - actual input-driven combat traverses all eight stages and defeats all thirteen Boss encounters
+  ---
+  duration_ms: 121.021209
+  type: 'test'
+  ...
+# Subtest: Mac defaults use no numpad and all fourteen actions are distinct
+ok 35 - Mac defaults use no numpad and all fourteen actions are distinct
+  ---
+  duration_ms: 0.596917
+  type: 'test'
+  ...
+# Subtest: cross-player conflict and reserved browser keys are rejected transactionally
+ok 36 - cross-player conflict and reserved browser keys are rejected transactionally
+  ---
+  duration_ms: 0.300291
+  type: 'test'
+  ...
+# Subtest: two players and simultaneous jump/attack keep independent held states
+ok 37 - two players and simultaneous jump/attack keep independent held states
+  ---
+  duration_ms: 0.434417
+  type: 'test'
+  ...
+# Subtest: blur clears keyboard and every captured touch; pause clears both players
+ok 38 - blur clears keyboard and every captured touch; pause clears both players
+  ---
+  duration_ms: 0.510667
+  type: 'test'
+  ...
+# Subtest: each touch pointer releases only its own actions and supports diagonals
+ok 39 - each touch pointer releases only its own actions and supports diagonals
+  ---
+  duration_ms: 0.190042
+  type: 'test'
+  ...
+# Subtest: rebinding uses physical key codes and prevents sticky state
+ok 40 - rebinding uses physical key codes and prevents sticky state
+  ---
+  duration_ms: 0.160459
+  type: 'test'
+  ...
+# Subtest: a very short key or touch tap survives until exactly one simulation input read
+ok 41 - a very short key or touch tap survives until exactly one simulation input read
+  ---
+  duration_ms: 0.113875
+  type: 'test'
+  ...
+1..41
+# tests 41
+# suites 0
+# pass 41
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 644.227458
