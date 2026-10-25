@@ -1,4 +1,9 @@
-/.idea/
-/dist/
-/node_modules/
+.idea/
+node_modules/
+dist/
+build/
+coverage/
+.vite/
+/.omo/
+/.omx/
 .DS_Store
